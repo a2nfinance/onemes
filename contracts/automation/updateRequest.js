@@ -9,11 +9,11 @@ const {
     Location,
     CodeLanguage,
 } = require("@chainlink/functions-toolkit");
-const automatedFunctionsConsumerAbi = require("../../abi/automatedFunctions.json");
+const automatedFunctionsConsumerAbi = require("./abi/automatedFunctions.json");
 const ethers = require("ethers");
 require("@chainlink/env-enc").config();
 
-const consumerAddress = "0x97aca2843473Ab91ed779C66e004309A42639811"; // REPLACE this with your Functions consumer address
+const consumerAddress = "0x9d3F404Cbc56Aba38ced29E05Ee50ea040b9269b"; // REPLACE this with your Functions consumer address
 const subscriptionId = 1341; // REPLACE this with your subscription ID
 
 const updateRequestFuji = async () => {
@@ -24,15 +24,15 @@ const updateRequestFuji = async () => {
         "https://01.functions-gateway.testnet.chain.link/",
         "https://02.functions-gateway.testnet.chain.link/"
     ];
-    const explorerUrl = "https://testnet.snowtrace.io";
+    const explorerUrl = "https://testnet.avascan.info";
 
     // Initialize functions settings
     const source = fs
-        .readFileSync(path.resolve(__dirname, "./sources/encodeDemo.js"))
+        .readFileSync(path.resolve(__dirname, "./sources/noti.js"))
         .toString();
 
     const args = ["1", "bitcoin", "btc-bitcoin"];
-    const secrets = { apiKey: process.env.COINMARKETCAP_API_KEY };
+    const secrets = { apiKey: process.env.API_KEY };
     const slotIdNumber = 0; // slot ID where to upload the secrets
     const expirationTimeMinutes = 150; // expiration time in minutes of the secrets
     const gasLimit = 300000;
@@ -58,11 +58,12 @@ const updateRequestFuji = async () => {
 
     console.log("Start simulation...");
 
+
     const response = await simulateScript({
         source: source,
-        args: [],
+        args: args,
         bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
-        secrets: secrets,
+        secrets: {},
     });
 
     console.log("Simulation result", response);
@@ -124,36 +125,36 @@ const updateRequestFuji = async () => {
     //         version: donHostedSecretsVersion,
     //     }); // encode encrypted secrets version
 
-    // const automatedFunctionsConsumer = new ethers.Contract(
-    //     consumerAddress,
-    //     automatedFunctionsConsumerAbi,
-    //     signer
-    // );
+    const automatedFunctionsConsumer = new ethers.Contract(
+        consumerAddress,
+        automatedFunctionsConsumerAbi,
+        signer
+    );
 
-    // // Encode request
+    // // // Encode request
 
-    // const functionsRequestBytesHexString = buildRequestCBOR({
-    //     codeLocation: Location.Inline, // Location of the source code - Only Inline is supported at the moment
-    //     codeLanguage: CodeLanguage.JavaScript, // Code language - Only JavaScript is supported at the moment
-    //     secretsLocation: Location.DONHosted, // Location of the encrypted secrets - DONHosted in this example
-    //     source: source, // soure code
-    //     encryptedSecretsReference: donHostedEncryptedSecretsReference,
-    //     args: args,
-    //     bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
-    // });
+    const functionsRequestBytesHexString = buildRequestCBOR({
+        codeLocation: Location.Inline, // Location of the source code - Only Inline is supported at the moment
+        codeLanguage: CodeLanguage.JavaScript, // Code language - Only JavaScript is supported at the moment
+        secretsLocation: Location.DONHosted, // Location of the encrypted secrets - DONHosted in this example
+        source: source, // soure code
+        // encryptedSecretsReference: {},
+        args: [],
+        bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
+    });
 
-    // // Update request settings
-    // const transaction = await automatedFunctionsConsumer.updateRequest(
-    //     functionsRequestBytesHexString,
-    //     subscriptionId,
-    //     gasLimit,
-    //     ethers.utils.formatBytes32String(donId) // jobId is bytes32 representation of donId
-    // );
+    // Update request settings
+    const transaction = await automatedFunctionsConsumer.updateRequest(
+        functionsRequestBytesHexString,
+        subscriptionId,
+        gasLimit,
+        ethers.utils.formatBytes32String(donId) // jobId is bytes32 representation of donId
+    );
 
-    // // Log transaction details
-    // console.log(
-    //     `\n✅ Automated Functions request settings updated! Transaction hash ${transaction.hash} - Check the explorer ${explorerUrl}/tx/${transaction.hash}`
-    // );
+    // Log transaction details
+    console.log(
+        `\n✅ Automated Functions request settings updated! Transaction hash ${transaction.hash} - Check the explorer ${explorerUrl}/tx/${transaction.hash}`
+    );
 };
 
 updateRequestFuji().catch((e) => {

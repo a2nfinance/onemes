@@ -6,4 +6,12 @@ library Structs {
     address accountAddress;
     bool existed;
   }
+
+  struct PendingTransferRequest {
+    address accountAddress;
+    address toAddress;
+    address tokenAddress;
+    uint256 amount;
+    uint64 destinationChainSelector;
+  }
 }

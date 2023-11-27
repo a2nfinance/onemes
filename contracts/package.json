@@ -13,7 +13,6 @@
     "format:fix": "prettier --write ."
   },
   "devDependencies": {
-    "@chainlink/contracts": "^0.5.1",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
@@ -39,8 +38,10 @@
     "typechain": "^8.1.0"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.8.0",
     "@chainlink/contracts-ccip": "^0.7.3",
     "@chainlink/env-enc": "^1.0.5",
+    "@chainlink/functions-toolkit": "^0.2.6",
     "@openzeppelin/contracts": "^4.8.3",
     "@openzeppelin/contracts-upgradeable": "4.8.3",
     "axios": "^1.1.3",
