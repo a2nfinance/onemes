@@ -1,0 +1,42 @@
+import mongoose from 'mongoose';
+let Schema = mongoose.Schema;
+
+let account = new Schema({
+    address: {
+        type: String,
+        required: true
+    },
+    network: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: false
+    },
+    phone_number: {
+        type: String,
+        required: true
+    },
+    twitter: {
+        type: String,
+        required: false
+    },
+    telegram: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: Number, // 0: active, 1: inactive, 2: paused
+        required: true,
+        default: 1
+    },
+    created_at: {
+        type: Date,
+        required: true,
+        default: Date.now
+    }
+});
+let Account = mongoose.model('Account', account);
+mongoose.models = {};
+export default Account;
