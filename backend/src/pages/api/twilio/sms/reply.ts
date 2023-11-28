@@ -23,11 +23,11 @@ async function handler(
 
                 let request = new Request({
                     sender: data.From,
-                    type: "sms",
+                    type: 1,
                     message: data.Body,
                     status: 0
                 });
-                
+
                 await request.save();
                 res.status(200).send({ success: true });
             } else {
