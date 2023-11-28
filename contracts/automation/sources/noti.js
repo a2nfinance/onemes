@@ -1,12 +1,12 @@
-const countryCode = args;
-const url = "https://537b-1-55-14-115.ngrok.io/api/request/noti";
+const requestIds = args;
+const url = "https://backend.onemes.a2n.finance/api/request/noti";
 const req = Functions.makeHttpRequest({
   url: url,
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
-  data: JSON.stringify(args)
+  data: JSON.stringify(requestIds)
 });
 
 const res = await req;

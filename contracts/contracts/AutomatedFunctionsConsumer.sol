@@ -7,10 +7,17 @@ import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import "./structs/Structs.sol";
 import "./interfaces/IAccount.sol";
+import "./interfaces/ICustomAutomatedFunction.sol";
 
-contract AutomatedFunctionsConsumer is FunctionsClient, AutomationCompatibleInterface, ConfirmedOwner {
+contract AutomatedFunctionsConsumer is
+  ICustomAutomatedFunction,
+  FunctionsClient,
+  AutomationCompatibleInterface,
+  ConfirmedOwner
+{
   using FunctionsRequest for FunctionsRequest.Request;
   address public upkeepContract;
+  string public source;
   bytes public request;
   uint64 public subscriptionId;
   uint32 public gasLimit;
@@ -36,20 +43,21 @@ contract AutomatedFunctionsConsumer is FunctionsClient, AutomationCompatibleInte
   }
 
   function updatePendingTransferRequest(
-    address accountAddress,
-    address toAddress,
-    address tokenAddress,
-    uint256 amount,
-    uint64 destinationChainSelector
-  ) external onlyOwner returns (uint256) {
-    Structs.PendingTransferRequest memory pendingTranferRequest = Structs.PendingTransferRequest(
-      accountAddress,
-      toAddress,
-      tokenAddress,
-      amount,
-      destinationChainSelector
-    );
-    _pendingTransferRequests.push(pendingTranferRequest);
+    Structs.PendingTransferRequest calldata _pendingTransferRequest
+  ) external override onlyOwner returns (uint256) {
+    _pendingTransferRequests.push(_pendingTransferRequest);
+    emit UpdatePendingTransferRequest();
+    return _pendingTransferRequests.length;
+  }
+
+  function updatePendingTransferRequests(
+    Structs.PendingTransferRequest[] memory requests
+  ) external override onlyOwner returns (uint256) {
+    for (uint256 i = 0; i < requests.length; i++) {
+      _pendingTransferRequests.push(requests[i]);
+    }
+
+    emit UpdatePendingTransferRequests();
     return _pendingTransferRequests.length;
   }
 
@@ -57,13 +65,37 @@ contract AutomatedFunctionsConsumer is FunctionsClient, AutomationCompatibleInte
     upkeepContract = _upkeepContract;
   }
 
-  function updateRequest(
+  function sendRequest(
+    string[] memory args,
+    bytes[] memory bytesArgs
+  ) internal returns (bytes32 requestId) {
+    FunctionsRequest.Request memory req;
+    req.initializeRequestForInlineJavaScript(source);
+    if (args.length > 0) req.setArgs(args);
+    if (bytesArgs.length > 0) req.setBytesArgs(bytesArgs);
+    s_lastRequestId = _sendRequest(req.encodeCBOR(), subscriptionId, gasLimit, donID);
+    return s_lastRequestId;
+  }
+
+  function updateRequestCBOR(
     bytes memory _request,
     uint64 _subscriptionId,
     uint32 _gasLimit,
     bytes32 _donID
   ) external onlyOwner {
     request = _request;
+    subscriptionId = _subscriptionId;
+    gasLimit = _gasLimit;
+    donID = _donID;
+  }
+
+  function updateRequest(
+    string memory _source,
+    uint64 _subscriptionId,
+    uint32 _gasLimit,
+    bytes32 _donID
+  ) external onlyOwner {
+    source = _source;
     subscriptionId = _subscriptionId;
     gasLimit = _gasLimit;
     donID = _donID;
@@ -78,6 +110,7 @@ contract AutomatedFunctionsConsumer is FunctionsClient, AutomationCompatibleInte
 
   function performUpkeep(bytes calldata /* performData */) external override {
     if (_pendingTransferRequests.length > 0) {
+      string[] memory requestIds = new string[](_pendingTransferRequests.length);
       // Call to account contract here
       for (uint256 i = 0; i < _pendingTransferRequests.length; i++) {
         IAccount(_pendingTransferRequests[i].accountAddress).transferTokensPayLink(
@@ -86,13 +119,11 @@ contract AutomatedFunctionsConsumer is FunctionsClient, AutomationCompatibleInte
           _pendingTransferRequests[i].amount,
           _pendingTransferRequests[i].destinationChainSelector
         );
+        requestIds[i] = _pendingTransferRequests[i].requestId;
       }
-      // Post to notification
-      // FunctionsRequest.Request memory req;
-      // req = request.decodeCBOR();
 
-      // req.setArgs(_pendingTransferRequests);
-      // s_lastRequestId = _sendRequest(request, subscriptionId, gasLimit, donID);
+      sendRequest(requestIds, new bytes[](0));
+      
       delete _pendingTransferRequests;
     }
   }

@@ -11,6 +11,21 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "EmptyArgs",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EmptySource",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoInlineSecrets",
+    "type": "error"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -134,6 +149,18 @@
       }
     ],
     "name": "Response",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "UpdatePendingTransferRequest",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "UpdatePendingTransferRequests",
     "type": "event"
   },
   {
@@ -309,6 +336,19 @@
   },
   {
     "inputs": [],
+    "name": "source",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "subscriptionId",
     "outputs": [
       {
@@ -336,29 +376,41 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "accountAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "toAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "tokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint64",
-        "name": "destinationChainSelector",
-        "type": "uint64"
+        "components": [
+          {
+            "internalType": "string",
+            "name": "requestId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "accountAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint64",
+            "name": "destinationChainSelector",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct Structs.PendingTransferRequest",
+        "name": "_pendingTransferRequest",
+        "type": "tuple"
       }
     ],
     "name": "updatePendingTransferRequest",
@@ -369,6 +421,85 @@
         "type": "uint256"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "requestId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "accountAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint64",
+            "name": "destinationChainSelector",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct Structs.PendingTransferRequest[]",
+        "name": "requests",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "updatePendingTransferRequests",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_source",
+        "type": "string"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_subscriptionId",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_gasLimit",
+        "type": "uint32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_donID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "updateRequest",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -395,7 +526,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "updateRequest",
+    "name": "updateRequestCBOR",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

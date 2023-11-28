@@ -13,7 +13,7 @@ const automatedFunctionsConsumerAbi = require("./abi/automatedFunctions.json");
 const ethers = require("ethers");
 require("@chainlink/env-enc").config();
 
-const consumerAddress = "0x9d3F404Cbc56Aba38ced29E05Ee50ea040b9269b"; // REPLACE this with your Functions consumer address
+const consumerAddress = "0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA"; // REPLACE this with your Functions consumer address
 const subscriptionId = 1341; // REPLACE this with your subscription ID
 
 const updateRequestFuji = async () => {
@@ -133,19 +133,19 @@ const updateRequestFuji = async () => {
 
     // // // Encode request
 
-    const functionsRequestBytesHexString = buildRequestCBOR({
-        codeLocation: Location.Inline, // Location of the source code - Only Inline is supported at the moment
-        codeLanguage: CodeLanguage.JavaScript, // Code language - Only JavaScript is supported at the moment
-        secretsLocation: Location.DONHosted, // Location of the encrypted secrets - DONHosted in this example
-        source: source, // soure code
-        // encryptedSecretsReference: {},
-        args: [],
-        bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
-    });
+    // const functionsRequestBytesHexString = buildRequestCBOR({
+    //     codeLocation: Location.Inline, // Location of the source code - Only Inline is supported at the moment
+    //     codeLanguage: CodeLanguage.JavaScript, // Code language - Only JavaScript is supported at the moment
+    //     secretsLocation: Location.DONHosted, // Location of the encrypted secrets - DONHosted in this example
+    //     source: source, // soure code
+    //     // encryptedSecretsReference: {},
+    //     args: [],
+    //     bytesArgs: [], // bytesArgs - arguments can be encoded off-chain to bytes.
+    // });
 
     // Update request settings
     const transaction = await automatedFunctionsConsumer.updateRequest(
-        functionsRequestBytesHexString,
+        source,
         subscriptionId,
         gasLimit,
         ethers.utils.formatBytes32String(donId) // jobId is bytes32 representation of donId

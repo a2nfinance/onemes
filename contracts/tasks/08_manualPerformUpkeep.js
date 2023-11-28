@@ -1,4 +1,6 @@
-task("add-pending-request", "add pending transfer request").setAction(async (taskArgs, hre) => {
+const { BigNumber } = require("ethers")
+
+task("manual-perform-upkeep", "manual-perform-upkeep").setAction(async (taskArgs, hre) => {
     if (network.name === "hardhat") {
         throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
     }
@@ -13,16 +15,8 @@ task("add-pending-request", "add pending transfer request").setAction(async (tas
     const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
     const functionsContract = await functionsFactory.attach("0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA");
 
-    const sendTokensTx = await functionsContract.updatePendingTransferRequest(
-        [
-            "1001",
-            "0x296C134d55Ae13eeab316605bceD8B04e36571D1",
-            "0x8537ab2ae554F095fF33EB8be02640f6827eC616",
-            // Link token address
-            "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
-            100000000000000,
-            0
-        ]
+    const sendTokensTx = await functionsContract.performUpkeep(
+        "0x"
     )
     await sendTokensTx.wait()
     console.log("\nTx hash is ", sendTokensTx.hash)

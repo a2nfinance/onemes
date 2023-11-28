@@ -13,7 +13,7 @@ task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request").set
 
     console.log(`\nAdd pending request to ${network.name}...`)
     const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
-    const functionsContract = await functionsFactory.attach("0xAB1EFb988201fA3E8a7e0A362953BF0d0A96866e");
+    const functionsContract = await functionsFactory.attach("0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA");
 
     const sendTokensTx = await functionsContract.updatePendingTransferRequest(
         "0x296C134d55Ae13eeab316605bceD8B04e36571D1",

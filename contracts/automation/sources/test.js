@@ -1,0 +1,1 @@
+return Functions.encodeString(JSON.stringify("aaa"));

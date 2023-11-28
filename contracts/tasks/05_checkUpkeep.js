@@ -1,7 +1,7 @@
 
 // const { networks } = require("../networks")
 
-task("check-unkeep", "check-unkeep").setAction(async (taskArgs, hre) => {
+task("check-upkeep", "check-upkeep").setAction(async (taskArgs, hre) => {
     if (network.name === "hardhat") {
         throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
     }
@@ -14,7 +14,7 @@ task("check-unkeep", "check-unkeep").setAction(async (taskArgs, hre) => {
 
     console.log(`\nAdd pending request to ${network.name}...`)
     const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
-    const functionsContract = await functionsFactory.attach("0xAB1EFb988201fA3E8a7e0A362953BF0d0A96866e");
+    const functionsContract = await functionsFactory.attach("0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA");
 
     const checkUnkeep = await functionsContract.checkUpkeep(
         "0x"

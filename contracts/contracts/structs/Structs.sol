@@ -8,6 +8,7 @@ library Structs {
   }
 
   struct PendingTransferRequest {
+    string requestId;
     address accountAddress;
     address toAddress;
     address tokenAddress;
