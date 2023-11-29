@@ -2,7 +2,15 @@ import mongoose from 'mongoose';
 let Schema = mongoose.Schema;
 
 let account = new Schema({
-    address: {
+    wallet_address: {
+        type: String,
+        required: true
+    },
+    onemes_name: {
+        type: String,
+        required: true
+    },
+    onemes_account_address: {
         type: String,
         required: true
     },
@@ -25,6 +33,11 @@ let account = new Schema({
     telegram: {
         type: String,
         required: false
+    },
+    use_wallet_address_to_receive: {
+        type: Boolean,
+        required: true,
+        default: true
     },
     status: {
         type: Number, // 0: active, 1: inactive, 2: paused

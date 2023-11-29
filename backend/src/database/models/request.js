@@ -15,9 +15,9 @@ let request = new Schema({
         required: true
     },
     status: {
-        type: Number, // 1: pending, 2: success, 3: fail
+        type: Number, // 0: pending, 1: success, 2: fail
         required: true,
-        default: 1
+        default: 0
     },
     created_at: {
         type: Date,

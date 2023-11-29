@@ -1,27 +1,36 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-
+import Account from "@/database/models/account";
+import connect from '@/database/connect';
 type Data = {
-  success: boolean
+    success: boolean
 }
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
+async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<Data>
 ) {
     try {
         if (req.method === 'POST') {
             // need to validate
             if (req.body) {
-                console.log("Body Data:", req.body)
-                res.status(200).send({success: true});
+                console.log("Body Data:", req.body);
+                const ids = req.body;
+                for (let i = 0; i < ids.length; i++) {
+                    await Account.findByIdAndUpdate(ids[i], {
+                        status: 1
+                    })
+                }
+                res.status(200).send({ success: true });
             } else {
-                res.status(422).send({success: false});
+                res.status(422).send({ success: false });
             }
         } else {
-            res.status(422).send({success: false});
+            res.status(422).send({ success: false });
         }
-    } catch(e) {
+    } catch (e) {
         res.status(500).send(e.message);
     }
 }
+
+export default connect(handler);
