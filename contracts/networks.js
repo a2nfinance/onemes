@@ -45,6 +45,19 @@ const networks = {
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
   },
+  mumbai: {
+    url: process.env.MUMBAI_RPC_URL || "THIS HAS NOT BEEN SET",
+    router: "0x70499c328e1e2a3c41108bd3730f6670a44595d1",
+    chainSelector: "12532609583862916517",
+    gasPrice: undefined,
+    accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+    verifyApiKey: "THIS HAS NOT BEEN SET",
+    chainId: 80001,
+    confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
+    nativeCurrencySymbol: "MATIC",
+    linkToken: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+    bnmToken: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
+  },
 }
 
 module.exports = {

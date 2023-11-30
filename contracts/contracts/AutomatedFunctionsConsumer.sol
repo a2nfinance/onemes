@@ -36,11 +36,7 @@ contract AutomatedFunctionsConsumer is
 
   constructor(address router) FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
-  modifier onlyAllowed() {
-    if (msg.sender != owner() && msg.sender != upkeepContract)
-      revert NotAllowedCaller(msg.sender, owner(), upkeepContract);
-    _;
-  }
+  receive() external payable {}
 
   function updatePendingTransferRequest(
     Structs.PendingTransferRequest calldata _pendingTransferRequest
@@ -61,14 +57,17 @@ contract AutomatedFunctionsConsumer is
     return _pendingTransferRequests.length;
   }
 
-  function setAutomationCronContract(address _upkeepContract) external onlyOwner {
-    upkeepContract = _upkeepContract;
+  function deletePendingTransferRequest(uint256 index) external override onlyOwner {
+    delete _pendingTransferRequests[index];
+    emit DeletePendingTransferRequest();
   }
 
-  function sendRequest(
-    string[] memory args,
-    bytes[] memory bytesArgs
-  ) internal returns (bytes32 requestId) {
+  function clearPendingTransferRequests() external override onlyOwner {
+    delete _pendingTransferRequests;
+    emit ClearPendingTransferRequests();
+  }
+
+  function sendRequest(string[] memory args, bytes[] memory bytesArgs) internal returns (bytes32 requestId) {
     FunctionsRequest.Request memory req;
     req.initializeRequestForInlineJavaScript(source);
     if (args.length > 0) req.setArgs(args);
@@ -123,7 +122,7 @@ contract AutomatedFunctionsConsumer is
       }
 
       sendRequest(requestIds, new bytes[](0));
-      
+
       delete _pendingTransferRequests;
     }
   }

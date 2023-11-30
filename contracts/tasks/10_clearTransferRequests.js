@@ -1,6 +1,4 @@
-const { BigNumber } = require("ethers")
-
-task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request").setAction(async (taskArgs, hre) => {
+task("clear-pending-requests", "clear pending transfer requests").setAction(async (taskArgs, hre) => {
     if (network.name === "hardhat") {
         throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
     }
@@ -15,16 +13,7 @@ task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request").set
     const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
     const functionsContract = await functionsFactory.attach("0xa8080C7D771dc5B7a2e13E5803dAB0253BC145D5");
 
-    const sendTokensTx = await functionsContract.updatePendingTransferRequest(
-        
-            [
-                "6566facb8a63cfdcfb79f935",
-                "0x296C134d55Ae13eeab316605bceD8B04e36571D1",
-                "0x8537ab2ae554F095fF33EB8be02640f6827eC616",
-                "0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4",
-                1000000,
-                new BigNumber.from("16015286601757825753")
-            ]
+    const sendTokensTx = await functionsContract.clearPendingTransferRequests(
         
     )
     await sendTokensTx.wait()

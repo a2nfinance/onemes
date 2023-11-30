@@ -14,7 +14,7 @@ task("check-upkeep", "check-upkeep").setAction(async (taskArgs, hre) => {
 
     console.log(`\nAdd pending request to ${network.name}...`)
     const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
-    const functionsContract = await functionsFactory.attach("0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA");
+    const functionsContract = await functionsFactory.attach("0xa8080C7D771dc5B7a2e13E5803dAB0253BC145D5");
 
     const checkUnkeep = await functionsContract.checkUpkeep(
         "0x"

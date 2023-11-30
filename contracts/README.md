@@ -12,5 +12,5 @@ npx hardhat node
 npx hardhat run scripts/deploy.ts
 ```
 ---
-npx hardhat transfer-token --network fuji --amount 1000000 --sender 0x2b91e1DDbE359e6c20a7C3aC6F53AE64BBeb8dF3 --reciever 0x8537ab2ae554F095fF33EB8be02640f6827eC616 --dest sepolia
+npx hardhat transfer-token --network fuji --amount 100000000000 --sender 0x296C134d55Ae13eeab316605bceD8B04e36571D1 --reciever 0x8537ab2ae554F095fF33EB8be02640f6827eC616 --dest sepolia
 ---
