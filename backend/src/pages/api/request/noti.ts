@@ -17,6 +17,7 @@ async function handler(
                 console.log("Body Data:", req.body);
                 const ids = req.body;
                 for (let i = 0; i < ids.length; i++) {
+                    console.log(ids[i], " processing")
                     let rq = await Request.findByIdAndUpdate(ids[i], {
                         status: 1
                     })
