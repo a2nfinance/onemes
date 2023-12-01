@@ -14,8 +14,8 @@ async function handler(
         if (req.method === 'POST') {
             // need to validate
             if (req.body) {
-
-            
+                const account = new Account(req.body);
+                await account.save();
                 res.status(200).send({ success: true });
             } else {
                 res.status(422).send({ success: false });

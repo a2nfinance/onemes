@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Account from "@/database/models/account";
+import Request from "@/database/models/request";
 import connect from '@/database/connect';
 type Data = {
     success: boolean
@@ -17,7 +17,7 @@ async function handler(
                 console.log("Body Data:", req.body);
                 const ids = req.body;
                 for (let i = 0; i < ids.length; i++) {
-                    await Account.findByIdAndUpdate(ids[i], {
+                    await Request.findByIdAndUpdate(ids[i], {
                         status: 1
                     })
                 }

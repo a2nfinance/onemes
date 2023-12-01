@@ -40,7 +40,7 @@ let account = new Schema({
         default: true
     },
     status: {
-        type: Number, // 0: active, 1: inactive, 2: paused
+        type: Number, // 0: inactive, 1: active, 2: paused
         required: true,
         default: 1
     },
