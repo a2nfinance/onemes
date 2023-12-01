@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
+import "../structs/Structs.sol";
 
 interface IAccountFactory {
-  event CreateAccount(address, string);
+  event CreateAccount(address, address, Structs.Account);
+  event UpdateSettings(address, address, address);
 
-  function createAccount(
-    string memory name,
-    string memory email,
-    string memory phoneNumber,
-    string memory twitter,
-    string memory telegram
-  ) external returns (address, string memory);
+  function createAccount(Structs.Account memory account) external;
+
+  function updateSettings(address __router, address __linkToken, address __oneMesNaming) external;
 }

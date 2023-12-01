@@ -1,8 +1,8 @@
-const { networks } = require("../networks")
+const { networks } = require("../../networks")
 
-task("transfer-token", "transfers token x-chain from Sender.sol to Protocol.sol")
-  .addParam("sender", "address of Sender.sol")
-  .addParam("reciever", "address of Protocol.sol")
+task("transfer-token", "transfers token x-chain from Account.sol to another address")
+  .addParam("sender", "address of Account.sol")
+  .addParam("reciever", "address of the reciever")
   .addParam("dest", "destination chain as specified in networks.js file")
   .addParam("amount", "token amount to transfer in expressed in smallest denomination (eg juels, wei)")
   .setAction(async (taskArgs, hre) => {

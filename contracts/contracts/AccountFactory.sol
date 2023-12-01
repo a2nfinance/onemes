@@ -4,6 +4,7 @@ import "./interfaces/IAccountFactory.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Account.sol";
 import "./interfaces/IOneMesNaming.sol";
+import "./structs/Structs.sol";
 
 contract AccountFactory is IAccountFactory, Ownable {
   // ChainlinkRouter
@@ -14,27 +15,20 @@ contract AccountFactory is IAccountFactory, Ownable {
 
   IOneMesNaming private _oneMesNaming;
 
-  function createAccount(
-    string memory _name,
-    string memory _email,
-    string memory _phoneNumber,
-    string memory _twitter,
-    string memory _telegram
-  ) external returns (address, string memory) {
+  function createAccount(Structs.Account memory account) external override {
     // Create account contract
 
-    Account account = new Account(_name, _email, _phoneNumber, _twitter, _telegram, _router, _linkToken, msg.sender);
+    Account createdAccount = new Account(account, _router, _linkToken, msg.sender);
 
-    // Regis a custom name
+    _oneMesNaming.createName(account.name, address(createdAccount));
 
-    string memory customName = _oneMesNaming.createName(_name, address(account));
-
-    return (address(account), customName);
+    emit CreateAccount(msg.sender, address(createdAccount), account);
   }
 
-  function init(address __router, address __linkToken, address __oneMesNaming) external onlyOwner {
+  function updateSettings(address __router, address __linkToken, address __oneMesNaming) external override onlyOwner {
     _router = __router;
     _linkToken = __linkToken;
     _oneMesNaming = IOneMesNaming(__oneMesNaming);
+    emit UpdateSettings(__router, __linkToken, __oneMesNaming);
   }
 }

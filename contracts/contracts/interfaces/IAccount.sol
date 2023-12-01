@@ -1,11 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
+import "../structs/Structs.sol";
 
 interface IAccount {
-  event UpdateAccount();
-  event TransferToken();
+  event UpdateGeneralInfo(Structs.Account);
+
+  event UpdateReceiverSetting(bool);
+
+  event TransferToken(address, uint256);
+
   error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
+
   error FailedToWithdrawEth(address sender, uint256 amount);
+
   // Event emitted when a message is sent to another chain.
   event TokensTransferred(
     bytes32 indexed messageId, // The unique ID of the message.
@@ -17,7 +24,9 @@ interface IAccount {
     uint256 fees // The fees paid for sending the message.
   );
 
-  function updateAccount(string memory attribute, string memory value) external;
+  function updateGeneralInfo(Structs.Account memory account) external;
+
+  function updateReceiverSetting(bool value) external;
 
   function transferTokensPayLink(
     address _receiver,

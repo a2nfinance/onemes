@@ -4,11 +4,12 @@ import "./interfaces/IOneMesNaming.sol";
 import "./structs/Structs.sol";
 
 contract OneMesNaming is IOneMesNaming {
-  mapping(string => Structs.Account) public nameMap;
+  mapping(string => Structs.NamingAccount) public nameMap;
 
   function createName(string memory _name, address _accountAddress) external returns (string memory) {
     if (!nameMap[_name].existed) {
       nameMap[_name].accountAddress = _accountAddress;
+      emit CreateName(_name, _accountAddress);
       return _name;
     } else {
       return "";

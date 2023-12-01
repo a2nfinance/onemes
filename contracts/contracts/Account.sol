@@ -5,6 +5,7 @@ import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
+import "./structs/Structs.sol";
 
 contract Account is IAccount {
   string private _name;
@@ -12,6 +13,7 @@ contract Account is IAccount {
   string private _phoneNumber;
   string private _twitter;
   string private _telegram;
+  bool private _use_wallet_address_to_receive;
   address public owner;
 
   // ChainlinkRouter
@@ -28,28 +30,19 @@ contract Account is IAccount {
   }
 
   //Contructor
-  constructor(
-    string memory __name,
-    string memory __email,
-    string memory __phoneNumber,
-    string memory __twitter,
-    string memory __telegram,
-    address _router,
-    address _link,
-    address _owner
-  ) {
-    _name = __name;
-    _email = __email;
-    _phoneNumber = __phoneNumber;
-    _twitter = __twitter;
-    _telegram = __telegram;
+  constructor(Structs.Account memory account, address _router, address _link, address _owner) {
+    _name = account.name;
+    _email = account.email;
+    _phoneNumber = account.phoneNumber;
+    _twitter = account.twitter;
+    _telegram = account.telegram;
+    _use_wallet_address_to_receive = account.use_wallet_address_to_receive;
     owner = _owner;
     s_router = IRouterClient(_router);
     s_linkToken = LinkTokenInterface(_link);
   }
 
-
-function transferTokensPayNative(
+  function transferTokensPayNative(
     address _receiver,
     address _token,
     uint256 _amount,
@@ -58,51 +51,32 @@ function transferTokensPayNative(
     // Need to assert some conditions here
 
     if (_destinationChainSelector != 0) {
-      Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
-            _receiver,
-            _token,
-            _amount,
-            address(0)
-        );
+      Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(_receiver, _token, _amount, address(0));
 
-        // Get the fee required to send the message
-        uint256 fees = s_router.getFee(
-            _destinationChainSelector,
-            evm2AnyMessage
-        );
+      // Get the fee required to send the message
+      uint256 fees = s_router.getFee(_destinationChainSelector, evm2AnyMessage);
 
-        if (fees > address(this).balance)
-            revert NotEnoughBalance(address(this).balance, fees);
+      if (fees > address(this).balance) revert NotEnoughBalance(address(this).balance, fees);
 
-        // approve the Router to spend tokens on contract's behalf. It will spend the amount of the given token
-        IERC20(_token).approve(address(s_router), _amount);
+      // approve the Router to spend tokens on contract's behalf. It will spend the amount of the given token
+      IERC20(_token).approve(address(s_router), _amount);
 
-        // Send the message through the router and store the returned message ID
-        messageId = s_router.ccipSend{value: fees}(
-            _destinationChainSelector,
-            evm2AnyMessage
-        );
+      // Send the message through the router and store the returned message ID
+      messageId = s_router.ccipSend{value: fees}(_destinationChainSelector, evm2AnyMessage);
 
-        // Emit an event with message details
-        emit TokensTransferred(
-            messageId,
-            _destinationChainSelector,
-            _receiver,
-            _token,
-            _amount,
-            address(0),
-            fees
-        );
+      // Emit an event with message details
+      emit TokensTransferred(messageId, _destinationChainSelector, _receiver, _token, _amount, address(0), fees);
 
-        // Return the message ID
-        return messageId;
+      // Return the message ID
+      return messageId;
     } else {
       if (_token == address(0)) {
         payable(_receiver).transfer(_amount);
+        emit TransferToken(address(0), _amount);
       } else {
         IERC20(_token).transfer(_receiver, _amount);
+        emit TransferToken(_token, _amount);
       }
-      emit TransferToken();
       return 0;
     }
   }
@@ -117,19 +91,14 @@ function transferTokensPayNative(
 
     if (_destinationChainSelector != 0) {
       // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-      Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
-        _receiver,
-        _token,
-        _amount,
-        address(s_linkToken)
-      );
+      Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(_receiver, _token, _amount, address(s_linkToken));
 
       // Get the fee required to send the message
       uint256 fees = s_router.getFee(_destinationChainSelector, evm2AnyMessage);
 
       if (fees > s_linkToken.balanceOf(address(this)))
         revert NotEnoughBalance(s_linkToken.balanceOf(address(this)), fees);
-      
+
       s_linkToken.approve(address(s_router), fees);
 
       // Approve the Router to transfer the tokens on contract's behalf.
@@ -140,29 +109,44 @@ function transferTokensPayNative(
 
       // Emit an event with message details
       emit TokensTransferred(
-            messageId,
-            _destinationChainSelector,
-            _receiver,
-            _token,
-            _amount,
-            address(s_linkToken),
-            fees
-        );
+        messageId,
+        _destinationChainSelector,
+        _receiver,
+        _token,
+        _amount,
+        address(s_linkToken),
+        fees
+      );
 
       // Return the message ID
       return messageId;
     } else {
       if (_token == address(0)) {
         payable(_receiver).transfer(_amount);
+        emit TransferToken(address(0), _amount);
       } else {
         IERC20(_token).transfer(_receiver, _amount);
+        emit TransferToken(_token, _amount);
       }
-      emit TransferToken();
+
       return 0;
     }
   }
 
-  function updateAccount(string memory attribute, string memory value) external override {}
+  function updateGeneralInfo(Structs.Account memory _account) external override onlyOwner {
+    _name = _account.name;
+    _email = _account.email;
+    _phoneNumber = _account.phoneNumber;
+    _twitter = _account.twitter;
+    _telegram = _account.telegram;
+    _use_wallet_address_to_receive = _account.use_wallet_address_to_receive;
+    emit UpdateGeneralInfo(_account);
+  }
+
+  function updateReceiverSetting(bool _value) external override onlyOwner {
+    _use_wallet_address_to_receive = _value;
+    emit UpdateReceiverSetting(_value);
+  }
 
   // @notice Construct a CCIP message.
   /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for tokens transfer.
@@ -196,9 +180,6 @@ function transferTokensPayNative(
       });
   }
 
-  /// @notice Fallback function to allow the contract to receive Ether.
-  /// @dev This function has no function body, making it a default function for receiving Ether.
-  /// It is automatically called when Ether is sent to the contract without any data.
   receive() external payable {}
 
   /// @notice Allows the contract owner to withdraw the entire balance of Ether from the contract.

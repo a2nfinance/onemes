@@ -14,14 +14,12 @@ async function handler(
         if (req.method === 'POST') {
             // need to validate
             if (req.body) {
-                console.log("Body Data:", req.body);
+                console.log("IDs:", req.body);
                 const ids = JSON.parse(req.body);
                 for (let i = 0; i < ids.length; i++) {
-                    console.log(ids[i], " processing")
                     let rq = await Request.findByIdAndUpdate(ids[i], {
                         status: 1
                     })
-                    console.log(rq);
                 }
                 res.status(200).send({ success: true });
             } else {
