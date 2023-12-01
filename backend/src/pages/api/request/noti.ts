@@ -15,7 +15,7 @@ async function handler(
             // need to validate
             if (req.body) {
                 console.log("Body Data:", req.body);
-                const ids = req.body;
+                const ids = JSON.parse(req.body);
                 for (let i = 0; i < ids.length; i++) {
                     console.log(ids[i], " processing")
                     let rq = await Request.findByIdAndUpdate(ids[i], {
