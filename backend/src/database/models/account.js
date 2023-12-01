@@ -14,7 +14,7 @@ let account = new Schema({
         type: String,
         required: true
     },
-    network: {
+    chain: {
         type: String,
         required: true,
     },

@@ -1,7 +1,6 @@
 import connect from '@/database/connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Account from "@/database/models/account";
-
 type Data = {
     success: boolean
 }
