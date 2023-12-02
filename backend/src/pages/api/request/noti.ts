@@ -2,6 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Request from "@/database/models/request";
 import connect from '@/database/connect';
+import { sendNoti } from '@/core/telegram';
+import { sendSMSMessage } from '@/core/twilio';
 type Data = {
     success: boolean
 }
@@ -14,12 +16,22 @@ async function handler(
         if (req.method === 'POST') {
             // need to validate
             if (req.body) {
-                console.log("IDs:", req.body);
-                const ids = JSON.parse(req.body);
+                console.log("Results:", req.body);
+                const results = JSON.parse(req.body);
+                const ids = results.map(r => r.split("_"));
                 for (let i = 0; i < ids.length; i++) {
-                    let rq = await Request.findByIdAndUpdate(ids[i], {
-                        status: 1
-                    })
+                    let request = await Request.findByIdAndUpdate(ids[i][0], {
+                        status: ids[i][1] === "1" ? 1 : 2
+                    });
+
+                    if (request.type === 2) {
+                        sendNoti(ids[i][0], request.sender, parseInt(ids[i][1]));
+                    }
+
+                    if (request.type === 1) {
+                        sendSMSMessage(ids[i][0], request.sender, parseInt(ids[i][1]));
+                    }
+
                 }
                 res.status(200).send({ success: true });
             } else {

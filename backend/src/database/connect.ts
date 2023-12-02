@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import dotenv from "dotenv"
+dotenv.config();
 
 const connect = handler => async (req, res) => {
     if (mongoose.connections[0].readyState) {
@@ -7,7 +9,7 @@ const connect = handler => async (req, res) => {
     }
 
     // Use new db connection
-    await mongoose.connect(process.env.NEXT_PUBLIC_DATABASE_URL, {
+    await mongoose.connect(process.env.DATABASE_URL, {
         //@ts-ignore
         useUnifiedTopology: true,
         useNewUrlParser: true
