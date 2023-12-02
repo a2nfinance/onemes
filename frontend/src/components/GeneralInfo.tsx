@@ -23,7 +23,7 @@ export const GeneralInfo = () => {
         <Divider />
         <Flex gap={5} align="center" vertical>
             <Button onClick={() => window.open(`${chain?.blockExplorers.default.url}/address/${accounts[0]?.onemes_account_address}`, "_blank")}>{getShortAddress(accounts[0]?.onemes_account_address)}</Button>
-            {(chain?.id && address) ? <Balance address={address} chainId={chain?.id} /> : <></>}
+            {(chain?.id && address) ? <Balance address={selectedAccount.onemes_account_address} chainId={chain?.id} /> : <></>}
         </Flex>
 
         <Divider />

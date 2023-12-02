@@ -11,8 +11,10 @@
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
     "@reduxjs/toolkit": "^1.8.6",
+    "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.0.0",
     "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
     "moment": "^2.29.4",
     "mongoose": "^7.4.0",
     "next": "^13.4.10",
@@ -25,8 +27,7 @@
     "redux-persist": "^6.0.0",
     "viem": "^1.19.10",
     "wagmi": "^1.4.7",
-    "world_countries_lists": "^2.8.2",
-    "ethers": "^5.7.2"
+    "world_countries_lists": "^2.8.2"
   },
   "devDependencies": {
     "@types/node": "^12.20.55",

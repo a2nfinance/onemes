@@ -8,6 +8,7 @@ import { Balance } from "./Balance";
 import { setSelectedAccount } from "src/controller/account/accountSlice";
 import { GeneralInfo } from "./GeneralInfo";
 import { Activity } from "./Activity";
+import { Actions } from "./Actions";
 
 
 export const AccountList = () => {
@@ -18,7 +19,7 @@ export const AccountList = () => {
         {
             key: '1',
             label: `Tokens`,
-            children: (address && chain?.id) ? <TokenList address={address} chainId={chain?.id} /> : <></>,
+            children: (address && chain?.id) ? <TokenList chainId={chain?.id} /> : <></>,
         },
         {
             key: '2',
@@ -35,20 +36,7 @@ export const AccountList = () => {
     return (
         <Card>
             <GeneralInfo />
-            <Row gutter={8}>
-                <Col span="8">
-                    <Button style={{ width: "100%" }} type="primary">Withdraw</Button>
-                </Col>
-                <Col span="8">
-                    <Button style={{ width: "100%" }} type="primary">Send</Button>
-                </Col>
-
-                <Col span="8">
-                    <Button style={{ width: "100%" }} type="primary">Update account</Button>
-                </Col>
-
-
-            </Row>
+            <Actions />
             <Tabs items={items} />
         </Card>
     )

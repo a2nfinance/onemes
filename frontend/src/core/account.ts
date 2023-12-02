@@ -1,5 +1,6 @@
 import { FormInstance } from "antd";
-import abi from "../abis/account_factory.json";
+import factoryAbi from "../abis/account_factory.json";
+import accountAbi from "../abis/account.json";
 import { networks } from "./networks";
 import { ethers } from "ethers";
 
@@ -7,7 +8,7 @@ import { ethers } from "ethers";
 export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: number) => {
     return {
         address: networks[`${chainId}`].accountFactory,
-        abi: abi,
+        abi: factoryAbi,
         functionName: 'createAccount',
         args: [
             [
@@ -22,10 +23,34 @@ export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: n
     }
 }
 
+
+export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress: string) => {
+    const token = formValues["token"];
+    if (token === "avax") {
+        return {
+            address: accountAddress,
+            abi: accountAbi,
+            functionName: 'withdraw',
+            args: [
+            ]
+        }
+    } else {
+        return {
+            address: accountAddress,
+            abi: accountAbi,
+            functionName: 'withdrawToken',
+            args: [
+                token
+            ]
+        }
+    }
+
+}
+
 export const saveAccount = async (data: any, values: any, chainId: number) => {
     // const accountFactoryLog = data.logs.filter(l => l.address === networks[`${chainId}`].accountFactory)[0];
     const accountFactoryLog = data.logs[1];
-    const contractInterface = new ethers.utils.Interface(abi);
+    const contractInterface = new ethers.utils.Interface(factoryAbi);
     const parsedLog = contractInterface.parseLog(accountFactoryLog);
     const accountAddress = parsedLog.args[1];
     let correctPhoneNumber = values["country"].split(" ")[0] + values["phone_number"];
@@ -56,6 +81,5 @@ export const getAccounts = async (walletAddress: string) => {
     });
 
     const res = await req.json();
-    console.log(res.accounts);
     return res.accounts;
 }

@@ -16,6 +16,7 @@ type Account = {
 type AccountState = {
     accounts: Account[],
     selectedAccount: Account,
+    tokenList: any[]
 }
 
 const initialState: AccountState = {
@@ -32,7 +33,8 @@ const initialState: AccountState = {
         use_wallet_address_to_receive: false,
         status: 1,
         created_at: "2023-12-20"
-    }
+    },
+    tokenList: []
 }
 export const accountSlice = createSlice({
     name: 'account',
@@ -46,8 +48,12 @@ export const accountSlice = createSlice({
         },
         setSelectedAccount: (state: AccountState, action: PayloadAction<Account>) => {
             state.selectedAccount = action.payload
+        },
+        setTokenList: (state: AccountState, action: PayloadAction<any[]>) => {
+            console.log(action.payload);
+            state.tokenList = action.payload
         }
     }
 })
-export const { setAccounts, setSelectedAccount } = accountSlice.actions;
+export const { setAccounts, setSelectedAccount, setTokenList } = accountSlice.actions;
 export default accountSlice.reducer;

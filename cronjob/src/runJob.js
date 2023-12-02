@@ -5,7 +5,6 @@ const { tokensOnFuji } = require("./const/tokenListOnFuji");
 const { tokensOnMumbai } = require("./const/tokenListOnMumbai");
 const { tokensOnSepolia } = require("./const/tokenListOnSepolia");
 const { networks } = require("./const/networks");
-const { mockRequests, mockAccounts } = require("./data/mockData");
 require("dotenv").config();
 
 const phonePattern = new RegExp(/^\+[1-9]{1}[0-9]{0,2}[0-9]+$/);
