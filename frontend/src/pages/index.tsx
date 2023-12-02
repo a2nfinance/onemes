@@ -54,8 +54,8 @@ export default function Index() {
                 <div>Connected to {connector?.name}</div>
                 <Button onClick={() => disconnect()}>Disconnect</Button> */}
 
-                <div style={{ maxWidth: 550, marginRight: "auto", marginLeft: "auto", marginTop: 40, marginBottom: 40, padding: 20 }}>
-                    <Tabs defaultActiveKey="1" items={items} onChange={() => { }} />
+                <div style={{ maxWidth: 500, marginRight: "auto", marginLeft: "auto", marginTop: 40, marginBottom: 40, padding: 20 }}>
+                    {accounts.length ? <AccountList/> : <NewAccountForm />}
                 </div>
 
 

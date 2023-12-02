@@ -2,7 +2,7 @@ import 'antd/dist/reset.css';
 import type { AppProps } from 'next/app';
 import Router from "next/router";
 import NProgress from "nprogress";
-import {Provider} from "react-redux";
+import { Provider } from "react-redux";
 import { useEffect, useState } from 'react';
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
 import { avalancheFuji, polygonMumbai, sepolia } from 'wagmi/chains'
@@ -10,6 +10,7 @@ import { avalancheFuji, polygonMumbai, sepolia } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { store } from 'src/controller/store';
+import { ConfigProvider } from 'antd';
 
 // Router.events.on("routeChangeStart", (url) => {
 //   NProgress.start()
@@ -83,9 +84,32 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       />
 
       <div style={{ visibility: !mounted ? 'hidden' : 'visible' }}>
-      <Provider store={store}>
-        <Component {...pageProps} />
-</Provider>
+        <Provider store={store}>
+          {/* <ConfigProvider
+            theme={{
+              // token: {
+              //   colorPrimary: '#34d399',
+              // },
+              components: {
+                Menu: {
+                  iconSize: 20,
+                  fontSize: 16
+                },
+              }
+            }}
+          > */}
+          <ConfigProvider
+            theme={{
+              token: {
+                borderRadius: 16,
+              },
+            }}
+          >
+            <Component {...pageProps} />
+          </ConfigProvider>
+          {/* </ConfigProvider> */}
+
+        </Provider>
       </div>
     </WagmiConfig>
   )
