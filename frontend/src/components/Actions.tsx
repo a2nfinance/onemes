@@ -109,8 +109,8 @@ export const Actions = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name={"to"} label={"To"} rules={[{ required: true, message: "Require amount" }]}>
-                                <Input size="large" placeholder='phonenumber, email...etc' />
+                            <Form.Item name={"to_address"} label={"To"} rules={[{ required: true, message: "Require amount" }]}>
+                                <Input size="large" placeholder='receiver address' />
                             </Form.Item>
                         </Col>
                     </Row>

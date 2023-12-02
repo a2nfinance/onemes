@@ -112,13 +112,18 @@ contract AutomatedFunctionsConsumer is
       string[] memory requestIds = new string[](_pendingTransferRequests.length);
       // Call to account contract here
       for (uint256 i = 0; i < _pendingTransferRequests.length; i++) {
-        IAccount(_pendingTransferRequests[i].accountAddress).transferTokensPayLink(
-          _pendingTransferRequests[i].toAddress,
-          _pendingTransferRequests[i].tokenAddress,
-          _pendingTransferRequests[i].amount,
-          _pendingTransferRequests[i].destinationChainSelector
-        );
-        requestIds[i] = _pendingTransferRequests[i].requestId;
+        try
+          IAccount(_pendingTransferRequests[i].accountAddress).transferTokensPayLink(
+            _pendingTransferRequests[i].toAddress,
+            _pendingTransferRequests[i].tokenAddress,
+            _pendingTransferRequests[i].amount,
+            _pendingTransferRequests[i].destinationChainSelector
+          )
+        returns (bytes32) {
+          requestIds[i] = string.concat(_pendingTransferRequests[i].requestId, "_1");
+        } catch {
+          requestIds[i] = string.concat(_pendingTransferRequests[i].requestId, "_0");
+        }
       }
 
       sendRequest(requestIds, new bytes[](0));
