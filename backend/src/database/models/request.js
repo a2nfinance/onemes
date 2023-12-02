@@ -7,12 +7,16 @@ let request = new Schema({
         required: true
     },
     type: {
-        type: Number, // 1: sms, 2: twitter, 3: telegram
+        type: Number, // 1: sms, 2: telegram, 3: twitter,
         required: true,
     },
     message: {
         type: String,
         required: true
+    },
+    message_id: {
+        type: String,
+        required: false
     },
     status: {
         type: Number, // 0: pending, 1: success, 2: fail
