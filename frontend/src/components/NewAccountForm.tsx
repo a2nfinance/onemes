@@ -40,10 +40,10 @@ export const NewAccountForm = () => {
         write?.()
     }, [contractConfig]);
     return (
-        <Card title={chain.id}>
+        <Card title={"ACCOUNT REGISTER"}>
             <Form name={"new_account_form"} layout='vertical' onFinish={onFinish} form={form}>
                 <Form.Item name='onemes_name' label={"Name"} rules={[{ required: true, message: 'Missing Name' }]}>
-                    <Input size='large' />
+                    <Input size='large' addonAfter={".onemes"}/>
                 </Form.Item>
                 <Row gutter={10}>
                     <Col span={10}>
@@ -66,11 +66,11 @@ export const NewAccountForm = () => {
                 <Form.Item name='email' label={"Email"} rules={[{ required: true, message: 'Missing email', type: "email" }]}>
                     <Input size='large' type='email' />
                 </Form.Item>
-                <Form.Item name='twitter' label={"Twitter Account"} rules={[{ required: false, message: 'Missing phone number', type: "email" }]}>
+                <Form.Item name='twitter' label={"Twitter"}>
                     <Input size='large' placeholder='@levia2n' />
                 </Form.Item>
-                <Form.Item name='telegram' label={"Telegram"} rules={[{ required: false, message: 'Missing phone number', type: "email" }]}>
-                    <Input size='large' placeholder='levia2n' />
+                <Form.Item name='telegram' label={"Telegram ID"}>
+                    <Input size='large' placeholder='5123456767' />
                 </Form.Item>
                 <Form.Item name={"use_wallet_address_to_receive"} initialValue={true} label={"Receive token"}>
                     <Radio.Group>
@@ -90,7 +90,7 @@ export const NewAccountForm = () => {
                 {(isPrepareError || isError) && (
                     <div>Error: {(prepareError || error)?.message}</div>
                 )}
-                <Button loading={isLoading} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>Create new OneMes account</Button>
+                <Button loading={isLoading} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>SUBMIT</Button>
             </Form>
         </Card>
     )

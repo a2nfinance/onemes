@@ -43,23 +43,19 @@ export default function Index() {
     useEffect(() => {
         setClient(true);
         getCurrentAccounts();
-    }, [])
+    }, [address])
 
 
     if (isConnected && client) {
         return (
-            <>
-                {/* <img src={ensAvatar} alt="ENS Avatar" />
-                <div>{ensName ? `${ensName} (${address})` : address}</div>
-                <div>Connected to {connector?.name}</div>
-                <Button onClick={() => disconnect()}>Disconnect</Button> */}
 
-                <div style={{ maxWidth: 500, marginRight: "auto", marginLeft: "auto", marginTop: 40, marginBottom: 40, padding: 20 }}>
+
+                <div style={{ maxWidth: 450, marginRight: "auto", marginLeft: "auto", marginTop: 40, marginBottom: 40, padding: 20 }}>
                     {accounts.length ? <AccountList/> : <NewAccountForm />}
                 </div>
 
 
-            </>
+
 
         )
     }

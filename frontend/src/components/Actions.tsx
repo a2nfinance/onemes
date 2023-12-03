@@ -1,11 +1,15 @@
 import { prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
-import { Button, Col, Form, Input, Modal, Row, Select } from "antd";
+import { Button, Col, Flex, Form, Input, Modal, Row, Select } from "antd";
 import { useCallback, useState } from "react";
 import { useAppSelector } from "src/controller/hooks";
-import { getWithdrawConfig } from "src/core/account";
-
+import { getTransferConfig, getWithdrawConfig } from "src/core/account";
+import { chainSelectors, nativeTokenAddress, networks } from 'src/core/networks';
+import { useNetwork } from 'wagmi';
+import { MdOutlineSavings, MdOutlineGeneratingTokens } from "react-icons/md";
+import { BsSend } from "react-icons/bs";
+import { GrUpgrade } from "react-icons/gr";
 export const Actions = () => {
-
+    const { chain } = useNetwork();
     const { tokenList, selectedAccount } = useAppSelector(state => state.account);
     const [isWithdrawModalOpen, setIsWihtdrawModalOpen] = useState(false);
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
@@ -43,7 +47,14 @@ export const Actions = () => {
 
     const onFinishSM = useCallback(async (values: any) => {
         try {
-            setIsSending(false);
+            setIsSending(true);
+            setIsWihtdrawModalOpen(false);
+            const config = getTransferConfig(values, selectedAccount.onemes_account_address, chain?.id);
+            const { request } = await prepareWriteContract(config)
+            const { hash } = await writeContract(request)
+            await waitForTransaction({
+                hash: hash,
+            })
         } catch (e) {
             console.log(e);
         }
@@ -57,29 +68,32 @@ export const Actions = () => {
 
     return (
         <>
-            <Row gutter={8}>
-                <Col span="8">
-                    <Button onClick={showWithdrawModal} loading={isWithdrawing} style={{ width: "100%" }} type="primary">Withdraw</Button>
-                </Col>
-                <Col span="8">
-                    <Button onClick={showSendModal} loading={isSendModalOpen} style={{ width: "100%" }} type="primary">Send</Button>
-                </Col>
+            <Flex justify='space-between'>
+                <Flex align="center" vertical>
+                    <Button icon={<MdOutlineSavings style={{ fontSize: "20" }} />} onClick={showWithdrawModal} loading={isWithdrawing} type="primary" />
+                    <span>Withdraw</span>
+                </Flex>
+                <Flex align="center" vertical>
+                    <Button icon={<MdOutlineGeneratingTokens style={{ fontSize: "20" }} />} onClick={showSendModal} loading={isSendModalOpen} type="primary" />
+                    <span>Send</span>
+                </Flex>
 
-                <Col span="8">
-                    <Button style={{ width: "100%" }} type="primary">Update account</Button>
-                </Col>
+                <Flex align="center" vertical>
+                    <Button icon={<GrUpgrade style={{ fontSize: "20" }} />} type="primary" />
+                    <span>Update</span>
+                </Flex>
 
 
-            </Row>
+            </Flex>
             <Modal title="Withdraw token" open={isWithdrawModalOpen} footer={false} onCancel={handleWMCancel}>
                 <Form onFinish={(values) => onFinishWM(values)} layout="vertical">
                     <Row gutter={12}>
                         <Col span={12}>
                             <Form.Item name={"token"} rules={[{ required: true, message: "Require token" }]}>
-                                <Select size="large" value={"avax"} options={
+                                <Select size="large" value={nativeTokenAddress} options={
                                     [
                                         ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                        { label: "AVAX", value: "avax" }
+                                        { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
                                     ]
                                 } />
                             </Form.Item>
@@ -92,36 +106,34 @@ export const Actions = () => {
                 </Form>
             </Modal >
 
-            <Modal title="Transfer token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
-                <Form 
-                onFinish={(values) => onFinishSM(values)} 
-                layout="vertical"
+            <Modal title="Send token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
+                <Form
+                    onFinish={(values) => onFinishSM(values)}
+                    layout="vertical"
                 >
                     <Row gutter={12}>
                         <Col span={12}>
-                            <Form.Item name={"transfer_type"} label={"Transfer"} rules={[{ required: true, message: "Require type" }]}>
+                            <Form.Item name={"chain"} label={"Destination chain"} initialValue={"14767482510784806043"} rules={[{ required: true, message: "Require type" }]}>
                                 <Select size="large" options={
-                                    [
-                                        { label: "Crosschain", value: "CTR" },
-                                        { label: "On the same chain", value: "TR" }
-                                    ]
+                                    chainSelectors.map(cs => ({ label: cs.name.toUpperCase(), value: cs.chainSelector }))
                                 } />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item name={"to_address"} label={"To"} rules={[{ required: true, message: "Require amount" }]}>
+                            <Form.Item name={"receiver"} label={"Receiver"} rules={[{ required: true, message: "Require amount" }]}>
                                 <Input size="large" placeholder='receiver address' />
                             </Form.Item>
                         </Col>
                     </Row>
 
                     <Row gutter={12}>
+
                         <Col span={12}>
-                            <Form.Item name={"token"} label="Token" rules={[{ required: true, message: "Require token" }]}>
+                            <Form.Item name={"token"} initialValue={nativeTokenAddress} label="Token" rules={[{ required: true, message: "Require token" }]}>
                                 <Select size="large" options={
                                     [
                                         ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                        { label: "AVAX", value: "avax" }
+                                        { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
                                     ]
                                 } />
                             </Form.Item>

@@ -7,6 +7,8 @@ interface IAccount {
 
   event UpdateReceiverSetting(bool);
 
+  event UpdateFunctionConsumerAddress(address);
+
   event TransferToken(address, uint256);
 
   error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
@@ -27,6 +29,8 @@ interface IAccount {
   function updateGeneralInfo(Structs.Account memory account) external;
 
   function updateReceiverSetting(bool value) external;
+
+  function updateFunctionConsumerAddress(address _functionConsumerAddress) external;
 
   function transferTokensPayLink(
     address _receiver,

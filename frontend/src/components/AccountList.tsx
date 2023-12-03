@@ -9,6 +9,7 @@ import { setSelectedAccount } from "src/controller/account/accountSlice";
 import { GeneralInfo } from "./GeneralInfo";
 import { Activity } from "./Activity";
 import { Actions } from "./Actions";
+import { QRCodeGenerator } from "./QRCodeGenerator";
 
 
 export const AccountList = () => {
@@ -31,13 +32,18 @@ export const AccountList = () => {
             label: `Account`,
             children: <Account />
         },
+        {
+            key: '4',
+            label: `QR Code`,
+            children: (address && chain?.id) ? <QRCodeGenerator  /> : <></>,
+        }
     ];
 
     return (
         <Card>
             <GeneralInfo />
             <Actions />
-            <Tabs items={items} />
+            <Tabs items={items} centered />
         </Card>
     )
 }

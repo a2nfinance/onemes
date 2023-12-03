@@ -15,6 +15,7 @@ contract Account is IAccount {
   string private _telegram;
   bool private _use_wallet_address_to_receive;
   address public owner;
+  address public functionConsumerAddress;
 
   // ChainlinkRouter
 
@@ -29,8 +30,19 @@ contract Account is IAccount {
     _;
   }
 
+  modifier isAllowed() {
+    require(msg.sender == owner || msg.sender == functionConsumerAddress, "Not allowed");
+    _;
+  }
+
   //Contructor
-  constructor(Structs.Account memory account, address _router, address _link, address _owner) {
+  constructor(
+    Structs.Account memory account,
+    address _router,
+    address _link,
+    address _functionConsumerAddress,
+    address _owner
+  ) {
     _name = account.name;
     _email = account.email;
     _phoneNumber = account.phoneNumber;
@@ -38,6 +50,7 @@ contract Account is IAccount {
     _telegram = account.telegram;
     _use_wallet_address_to_receive = account.use_wallet_address_to_receive;
     owner = _owner;
+    functionConsumerAddress = _functionConsumerAddress;
     s_router = IRouterClient(_router);
     s_linkToken = LinkTokenInterface(_link);
   }
@@ -47,7 +60,7 @@ contract Account is IAccount {
     address _token,
     uint256 _amount,
     uint64 _destinationChainSelector
-  ) external override returns (bytes32 messageId) {
+  ) external override isAllowed returns (bytes32 messageId) {
     // Need to assert some conditions here
 
     if (_destinationChainSelector != 0) {
@@ -86,7 +99,7 @@ contract Account is IAccount {
     address _token,
     uint256 _amount,
     uint64 _destinationChainSelector
-  ) external override returns (bytes32 messageId) {
+  ) external override isAllowed returns (bytes32 messageId) {
     // Need to assert some conditions here
 
     if (_destinationChainSelector != 0) {
@@ -146,6 +159,11 @@ contract Account is IAccount {
   function updateReceiverSetting(bool _value) external override onlyOwner {
     _use_wallet_address_to_receive = _value;
     emit UpdateReceiverSetting(_value);
+  }
+
+  function updateFunctionConsumerAddress(address _functionConsumerAddress) external override onlyOwner {
+    functionConsumerAddress = _functionConsumerAddress;
+    emit UpdateFunctionConsumerAddress(_functionConsumerAddress);
   }
 
   // @notice Construct a CCIP message.

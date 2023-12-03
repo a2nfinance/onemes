@@ -1,11 +1,12 @@
-import { Descriptions } from "antd";
+import { Button, Card, Descriptions, Divider, Space } from "antd";
 import { useAppSelector } from "src/controller/hooks";
 
 export const Account = () => {
-    const { selectedAccount } = useAppSelector(state => state.account);
+    const { selectedAccount, accounts } = useAppSelector(state => state.account);
     return (
-        <Descriptions layout="vertical" column={2}>
-                <Descriptions.Item label="Frienly Name">
+        <Card>
+            <Descriptions layout="vertical" column={2}>
+                <Descriptions.Item label="Alias">
                     {selectedAccount?.onemes_name}
                 </Descriptions.Item>
                 <Descriptions.Item label="Email">
@@ -25,5 +26,12 @@ export const Account = () => {
                     {selectedAccount?.use_wallet_address_to_receive ? "Use wallet address" : "Use OneMes account address"}
                 </Descriptions.Item>
             </Descriptions>
+            <Divider />
+            <Space direction="vertical" style={{width: "100%"}}>
+                {!(accounts.filter(a => a.chain === "mumbai").length) && <Button style={{ width: "100%" }} type="primary">New account on Polygon Mumbai</Button>}
+                {!(accounts.filter(a => a.chain === "sepolia").length) && <Button style={{ width: "100%" }} type="primary">New account on Etherum Sepolia</Button>}
+            </Space>
+
+        </Card>
     )
 }

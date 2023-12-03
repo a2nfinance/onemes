@@ -11,7 +11,7 @@ task("setup-automated-consumer", "deploy AutomatedFunctionsConsumer.sol").setAct
   console.log("\n__Compiling Contracts__")
   await run("compile")
 
-  console.log(`\nDeploying Sender.sol to ${network.name}...`)
+  console.log(`\nDeploying AutomatedFunctionsConsumer.sol to ${network.name}...`)
   const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer")
   const functionsContract = await functionsFactory.deploy("0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0")
   await functionsContract.deployTransaction.wait(1);

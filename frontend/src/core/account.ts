@@ -1,7 +1,7 @@
 import { FormInstance } from "antd";
 import factoryAbi from "../abis/account_factory.json";
 import accountAbi from "../abis/account.json";
-import { networks } from "./networks";
+import { chainSelectors, nativeTokenAddress, networks } from "./networks";
 import { ethers } from "ethers";
 
 
@@ -26,7 +26,7 @@ export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: n
 
 export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress: string) => {
     const token = formValues["token"];
-    if (token === "avax") {
+    if (token === nativeTokenAddress) {
         return {
             address: accountAddress,
             abi: accountAbi,
@@ -46,6 +46,26 @@ export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress:
     }
 
 }
+
+
+export const getTransferConfig = (formValues: FormInstance<any>, accountAddress: string, chainId: number) => {
+    const selector = chainSelectors.filter(c => c.name === networks[chainId].name);
+    return {
+        address: accountAddress,
+        abi: accountAbi,
+        functionName: 'transferTokensPayLink',
+        args: [
+            formValues["receiver"],
+            formValues["token"],
+            ethers.utils.parseUnits(formValues["amount"], "18"),
+            (selector.length && selector[0].chainSelector === formValues["chain"])
+                ? ethers.BigNumber.from("0")
+                : ethers.BigNumber.from(formValues["chain"])
+        ]
+    }
+
+}
+
 
 export const saveAccount = async (data: any, values: any, chainId: number) => {
     // const accountFactoryLog = data.logs.filter(l => l.address === networks[`${chainId}`].accountFactory)[0];
