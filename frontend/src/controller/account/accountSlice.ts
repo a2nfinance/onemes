@@ -34,7 +34,23 @@ const initialState: AccountState = {
         status: 1,
         created_at: "2023-12-20"
     },
-    tokenList: []
+    tokenList: [
+        {
+            loading: true,
+            tokenSymbol: "",
+            tokenName: "",
+            tokenQuantity: 0,
+            tokenInUsd: 0
+
+        },
+        {
+            loading: true,
+            tokenSymbol: "",
+            tokenName: "",
+            tokenQuantity: 0,
+            tokenInUsd: 0
+        },
+    ]
 }
 export const accountSlice = createSlice({
     name: 'account',

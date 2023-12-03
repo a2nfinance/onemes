@@ -11,8 +11,8 @@ export const Balance = ({address, chainId}) => {
         return (<></>)
     }
     return (
-        <>
+        <span style={{fontSize: 12}}>
             {data?.formatted} {data?.symbol}
-        </>
+        </span>
     )
 }

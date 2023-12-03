@@ -65,30 +65,30 @@ export const Actions = () => {
     const handleWMCancel = () => {
         setIsWihtdrawModalOpen(false);
     };
-
+    const actionsStyle = { width: 80, height: 80, backgroundColor: "#272626", padding: 10, borderRadius: 16 };
+    const subtitleFont = { fontSize: 12 };
     return (
         <>
             <Flex justify='space-between'>
-                <Flex align="center" vertical>
+                <Flex align="center" justify='center' vertical style={actionsStyle}>
                     <Button icon={<MdOutlineSavings style={{ fontSize: "20" }} />} onClick={showWithdrawModal} loading={isWithdrawing} type="primary" />
-                    <span>Withdraw</span>
+                    <span style={subtitleFont}>Withdraw</span>
                 </Flex>
-                <Flex align="center" vertical>
+                <Flex align="center" justify='center' vertical style={actionsStyle}>
                     <Button icon={<MdOutlineGeneratingTokens style={{ fontSize: "20" }} />} onClick={showSendModal} loading={isSendModalOpen} type="primary" />
-                    <span>Send</span>
+                    <span style={subtitleFont}>Send</span>
                 </Flex>
 
-                <Flex align="center" vertical>
+                <Flex align="center" justify='center' vertical style={actionsStyle}>
                     <Button icon={<GrUpgrade style={{ fontSize: "20" }} />} type="primary" />
-                    <span>Update</span>
+                    <span style={subtitleFont}>Update</span>
                 </Flex>
 
 
             </Flex>
-            <Modal title="Withdraw token" open={isWithdrawModalOpen} footer={false} onCancel={handleWMCancel}>
+            <Modal style={{maxWidth: 350}} title="Withdraw token" open={isWithdrawModalOpen} footer={false} onCancel={handleWMCancel}>
                 <Form onFinish={(values) => onFinishWM(values)} layout="vertical">
-                    <Row gutter={12}>
-                        <Col span={12}>
+                    
                             <Form.Item name={"token"} rules={[{ required: true, message: "Require token" }]}>
                                 <Select size="large" value={nativeTokenAddress} options={
                                     [
@@ -97,16 +97,15 @@ export const Actions = () => {
                                     ]
                                 } />
                             </Form.Item>
-                        </Col>
-                        <Col span={12}>
+
                             <Button loading={isWithdrawing} type="primary" size="large" htmlType="submit">Submit</Button>
-                        </Col>
-                    </Row>
+                        
+                    
 
                 </Form>
             </Modal >
 
-            <Modal title="Send token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
+            <Modal style={{maxWidth: 350}} title="Send token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
                 <Form
                     onFinish={(values) => onFinishSM(values)}
                     layout="vertical"

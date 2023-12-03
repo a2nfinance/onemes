@@ -1,4 +1,5 @@
-import { Button, Tabs, TabsProps } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, FloatButton, Tabs, TabsProps } from "antd";
 import { useEffect, useState } from "react";
 import { AccountList } from "src/components/AccountList";
 import { NewAccountForm } from "src/components/NewAccountForm";
@@ -48,15 +49,10 @@ export default function Index() {
 
     if (isConnected && client) {
         return (
-
-
-                <div style={{ maxWidth: 450, marginRight: "auto", marginLeft: "auto", marginTop: 40, marginBottom: 40, padding: 20 }}>
+                <div style={{ maxWidth: 420, marginRight: "auto", marginLeft: "auto", padding: 20, height: "100%" }}>
                     {accounts.length ? <AccountList/> : <NewAccountForm />}
+                    <FloatButton icon={<QuestionCircleOutlined />} type="default" style={{ right: 94 }} />
                 </div>
-
-
-
-
         )
     }
 
