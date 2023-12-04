@@ -1,11 +1,13 @@
 import { FormInstance } from "antd";
-import factoryAbi from "../abis/account_factory.json";
-import accountAbi from "../abis/account.json";
-import { chainSelectors, nativeTokenAddress, networks } from "./networks";
 import { ethers } from "ethers";
+import { Account } from "src/controller/account/accountSlice";
+import accountAbi from "../abis/account.json";
+import factoryAbi from "../abis/account_factory.json";
+import { chainSelectors, nativeTokenAddress, networks } from "./networks";
 
 
 export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: number) => {
+    let correctPhoneNumber = formValues["country"].split(" ")[0] + formValues["phone_number"];
     return {
         address: networks[`${chainId}`].accountFactory,
         abi: factoryAbi,
@@ -14,7 +16,7 @@ export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: n
             [
                 formValues["onemes_name"] + ".onemes",
                 formValues["email"],
-                formValues["phone_number"],
+                correctPhoneNumber,
                 formValues["twitter"] ?? "",
                 formValues["telegram"] ?? "",
                 formValues["use_wallet_address_to_receive"] ?? true,
@@ -23,6 +25,23 @@ export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: n
     }
 }
 
+export const getExpandAccountConfig = (selectedAccount: Account, chainId: number) => {
+    return {
+        address: networks[`${chainId}`].accountFactory,
+        abi: factoryAbi,
+        functionName: 'createAccount',
+        args: [
+            [
+                selectedAccount.onemes_name,
+                selectedAccount.email,
+                selectedAccount.phone_number,
+                selectedAccount.twitter ?? "",
+                selectedAccount.telegram ?? "",
+                selectedAccount.use_wallet_address_to_receive ?? true,
+            ]
+        ]
+    }
+}
 
 export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress: string) => {
     const token = formValues["token"];
@@ -67,6 +86,27 @@ export const getTransferConfig = (formValues: FormInstance<any>, accountAddress:
 }
 
 
+export const getUpdateConfig = (formValues: FormInstance<any>, selectedAccount: Account) => {
+    let correctPhoneNumber = formValues["country"].split(" ")[0] + formValues["phone_number"];
+    return {
+        address: selectedAccount.onemes_account_address,
+        abi: accountAbi,
+        functionName: 'updateGeneralInfo',
+        args: [
+            [
+                selectedAccount["onemes_name"],
+                formValues["email"],
+                correctPhoneNumber,
+                formValues["twitter"] ?? "",
+                formValues["telegram"] ?? "",
+                formValues["use_wallet_address_to_receive"] ?? true,
+            ]
+        ]
+    }
+
+}
+
+
 export const saveAccount = async (data: any, values: any, chainId: number) => {
     // const accountFactoryLog = data.logs.filter(l => l.address === networks[`${chainId}`].accountFactory)[0];
     const accountFactoryLog = data.logs[1];
@@ -90,6 +130,24 @@ export const saveAccount = async (data: any, values: any, chainId: number) => {
     })
 }
 
+
+export const updateAccount = async (formValues: FormInstance<any>, selectedAccount: Account) => {
+    let correctPhoneNumber = formValues["country"].split(" ")[0] + formValues["phone_number"];
+    let correctValues = {
+        ...formValues,
+        _id: selectedAccount._id,
+        phone_number: correctPhoneNumber,
+    };
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/account/update`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(correctValues)
+    })
+}
+
+
 export const getAccounts = async (walletAddress: string) => {
     console.log(walletAddress);
     const req = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/account/get-accounts`, {
@@ -103,3 +161,5 @@ export const getAccounts = async (walletAddress: string) => {
     const res = await req.json();
     return res.accounts;
 }
+
+

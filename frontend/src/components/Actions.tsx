@@ -1,23 +1,31 @@
 import { prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
-import { Button, Col, Flex, Form, Input, Modal, Row, Select } from "antd";
+import { Button, Col, Flex, Form, Input, Modal, Radio, Row, Select } from "antd";
 import { useCallback, useState } from "react";
-import { useAppSelector } from "src/controller/hooks";
-import { getTransferConfig, getWithdrawConfig } from "src/core/account";
+import { GrUpgrade } from "react-icons/gr";
+import { MdOutlineGeneratingTokens, MdOutlineSavings } from "react-icons/md";
+import { useAppDispatch, useAppSelector } from "src/controller/hooks";
+import { getAccounts, getTransferConfig, getUpdateConfig, getWithdrawConfig, updateAccount } from "src/core/account";
 import { chainSelectors, nativeTokenAddress, networks } from 'src/core/networks';
 import { useNetwork } from 'wagmi';
-import { MdOutlineSavings, MdOutlineGeneratingTokens } from "react-icons/md";
-import { BsSend } from "react-icons/bs";
-import { GrUpgrade } from "react-icons/gr";
+import countryCodes from "../data/CountryCodes.json";
+import { setAccounts } from 'src/controller/account/accountSlice';
 export const Actions = () => {
     const { chain } = useNetwork();
     const { tokenList, selectedAccount } = useAppSelector(state => state.account);
     const [isWithdrawModalOpen, setIsWihtdrawModalOpen] = useState(false);
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [isWithdrawing, setIsWithdrawing] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const dispatch = useAppDispatch();
 
     const showWithdrawModal = () => {
         setIsWihtdrawModalOpen(true);
+    };
+
+    const handleWMCancel = () => {
+        setIsWihtdrawModalOpen(false);
     };
 
     const showSendModal = () => {
@@ -27,6 +35,14 @@ export const Actions = () => {
     const handleSMCancel = () => {
         setIsSendModalOpen(false);
     };
+
+    const showUpdateModal = () => {
+        setIsUpdateModalOpen(true);
+    }
+
+    const handleUMCancel = () => {
+        setIsUpdateModalOpen(false);
+    }
 
     const onFinishWM = useCallback(async (values: any) => {
         try {
@@ -48,7 +64,7 @@ export const Actions = () => {
     const onFinishSM = useCallback(async (values: any) => {
         try {
             setIsSending(true);
-            setIsWihtdrawModalOpen(false);
+            setIsSendModalOpen(false);
             const config = getTransferConfig(values, selectedAccount.onemes_account_address, chain?.id);
             const { request } = await prepareWriteContract(config)
             const { hash } = await writeContract(request)
@@ -62,9 +78,27 @@ export const Actions = () => {
         setIsSending(false);
     }, []);
 
-    const handleWMCancel = () => {
-        setIsWihtdrawModalOpen(false);
-    };
+
+    const onFinishUM = useCallback(async (values: any) => {
+        try {
+            setIsUpdating(true);
+            setIsUpdateModalOpen(false);
+            const config = getUpdateConfig(values, selectedAccount);
+            const { request } = await prepareWriteContract(config)
+            const { hash } = await writeContract(request)
+            await waitForTransaction({
+                hash: hash,
+            })
+            await updateAccount(values, selectedAccount);
+            const accountsList = await getAccounts(selectedAccount.wallet_address);
+            dispatch(setAccounts(accountsList));
+        } catch (e) {
+            console.log(e);
+        }
+
+        setIsUpdating(false);
+    }, []);
+
     const actionsStyle = { width: 80, height: 80, backgroundColor: "#272626", padding: 10, borderRadius: 16 };
     const subtitleFont = { fontSize: 12 };
     return (
@@ -75,37 +109,37 @@ export const Actions = () => {
                     <span style={subtitleFont}>Withdraw</span>
                 </Flex>
                 <Flex align="center" justify='center' vertical style={actionsStyle}>
-                    <Button icon={<MdOutlineGeneratingTokens style={{ fontSize: "20" }} />} onClick={showSendModal} loading={isSendModalOpen} type="primary" />
+                    <Button icon={<MdOutlineGeneratingTokens style={{ fontSize: "20" }} />} onClick={showSendModal} loading={isSending} type="primary" />
                     <span style={subtitleFont}>Send</span>
                 </Flex>
 
                 <Flex align="center" justify='center' vertical style={actionsStyle}>
-                    <Button icon={<GrUpgrade style={{ fontSize: "20" }} />} type="primary" />
+                    <Button icon={<GrUpgrade style={{ fontSize: "20" }} />} onClick={showUpdateModal} loading={isUpdating} type="primary" />
                     <span style={subtitleFont}>Update</span>
                 </Flex>
 
 
             </Flex>
-            <Modal style={{maxWidth: 350}} title="Withdraw token" open={isWithdrawModalOpen} footer={false} onCancel={handleWMCancel}>
+            <Modal style={{ maxWidth: 350 }} title="Withdraw token" open={isWithdrawModalOpen} footer={false} onCancel={handleWMCancel}>
                 <Form onFinish={(values) => onFinishWM(values)} layout="vertical">
-                    
-                            <Form.Item name={"token"} rules={[{ required: true, message: "Require token" }]}>
-                                <Select size="large" value={nativeTokenAddress} options={
-                                    [
-                                        ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                        { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
-                                    ]
-                                } />
-                            </Form.Item>
 
-                            <Button loading={isWithdrawing} type="primary" size="large" htmlType="submit">Submit</Button>
-                        
-                    
+                    <Form.Item name={"token"} rules={[{ required: true, message: "Require token" }]}>
+                        <Select size="large" value={nativeTokenAddress} options={
+                            [
+                                ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
+                                { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
+                            ]
+                        } />
+                    </Form.Item>
+
+                    <Button loading={isWithdrawing} type="primary" size="large" htmlType="submit">Submit</Button>
+
+
 
                 </Form>
             </Modal >
 
-            <Modal style={{maxWidth: 350}} title="Send token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
+            <Modal style={{ maxWidth: 350 }} title="Send token" open={isSendModalOpen} footer={false} onCancel={handleSMCancel}>
                 <Form
                     onFinish={(values) => onFinishSM(values)}
                     layout="vertical"
@@ -155,6 +189,45 @@ export const Actions = () => {
 
                 </Form>
             </Modal >
+
+            <Modal style={{ maxWidth: 350 }} title="Update account info" open={isUpdateModalOpen} footer={false} onCancel={handleUMCancel}>
+                <Form name={"update_account_form"} layout='vertical' onFinish={onFinishUM}>
+                    <Row gutter={10}>
+                        <Col span={12}>
+                            <Form.Item name='country' initialValue={"+1 United States"} label={"Country"} rules={[{ required: true, message: 'Missing country' }]}>
+                                <Select size='large' options={
+                                    countryCodes.map(c => ({
+                                        label: `(${c.dial_code}) ${c.name}`,
+                                        value: `${c.dial_code} ${c.name}`
+                                    }))
+                                } />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item name='phone_number' label={"Phone number"} rules={[{ required: true, message: 'Missing phone number' }]}>
+                                <Input size='large' type='phone_number' />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item name='email' label={"Email"} rules={[{ required: true, message: 'Missing email', type: "email" }]}>
+                        <Input size='large' type='email' />
+                    </Form.Item>
+                    <Form.Item name='twitter' label={"Twitter"}>
+                        <Input size='large' placeholder='@levia2n' />
+                    </Form.Item>
+                    <Form.Item name='telegram' label={"Telegram ID"}>
+                        <Input size='large' placeholder='5123456767' />
+                    </Form.Item>
+                    <Form.Item name={"use_wallet_address_to_receive"} initialValue={true} label={"Receive token"}>
+                        <Radio.Group>
+                            <Radio value={true}>Use my wallet address</Radio>
+                            <Radio value={false}>Use OneMes account address</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                    <Button loading={isUpdating} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>SUBMIT</Button>
+                </Form>
+            </Modal>
 
         </>
 

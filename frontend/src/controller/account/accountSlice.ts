@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-type Account = {
+export type Account = {
+    _id?: string,
     wallet_address: string,
     onemes_name: string,
     onemes_account_address: string,

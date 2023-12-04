@@ -22,7 +22,7 @@ export const QRCodeGenerator = () => {
                 <Row gutter={12}>
                     <Col span={12}>
                         <Form.Item label="Token" name={"token"} rules={[{ required: true, message: "Require token" }]}>
-                            <Select options={
+                            <Select size="large" options={
 
                                 [
                                     ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
@@ -33,7 +33,7 @@ export const QRCodeGenerator = () => {
                     </Col>
                     <Col span={12}>
                         <Form.Item label="Amount" name={"amount"} rules={[{ required: true, message: "Require amount" }]}>
-                            <Input type="number" />
+                            <Input size="large" type="number" />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -41,12 +41,12 @@ export const QRCodeGenerator = () => {
                 <Row gutter={12}>
                     <Col span={12}>
                         <Form.Item label="Source chain" name={"source"}>
-                            <Select options={chainSelectors.map(t => ({ label: t.name.toUpperCase(), value: t.name }))} />
+                            <Select size="large" options={chainSelectors.map(t => ({ label: t.name.toUpperCase(), value: t.name }))} />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item label="Destination chain" name={"destination"}>
-                            <Select options={chainSelectors.map(t => ({ label: t.name.toUpperCase(), value: t.name }))} />
+                            <Select size="large" options={chainSelectors.map(t => ({ label: t.name.toUpperCase(), value: t.name }))} />
                         </Form.Item>
                     </Col>
                 </Row>
