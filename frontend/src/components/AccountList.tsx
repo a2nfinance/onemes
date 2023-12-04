@@ -1,17 +1,13 @@
-import { Button, Card, Col, Descriptions, Divider, Flex, Row, Select, Space, Tabs, TabsProps } from "antd"
-import { useAppSelector } from "src/controller/hooks"
-import { useAddress } from "src/hooks/useAddress";
-import { useAccount, useDisconnect, useNetwork } from "wagmi";
-import { Account } from "./Account";
-import { TokenList } from "./TokenList";
-import { Balance } from "./Balance";
-import { setSelectedAccount } from "src/controller/account/accountSlice";
-import { GeneralInfo } from "./GeneralInfo";
-import { Activity } from "./Activity";
-import { Actions } from "./Actions";
-import { QRCodeGenerator } from "./QRCodeGenerator";
-import { WalletStyle } from "src/styles/wallet";
+import { Button, Card, Tabs, TabsProps } from "antd";
 import { useState } from "react";
+import { WalletStyle } from "src/styles/wallet";
+import { useAccount, useNetwork } from "wagmi";
+import { Account } from "./Account";
+import { Actions } from "./Actions";
+import { Activity } from "./Activity";
+import { GeneralInfo } from "./GeneralInfo";
+import { QRCodeGenerator } from "./QRCodeGenerator";
+import { TokenList } from "./TokenList";
 
 
 export const AccountList = () => {
@@ -23,12 +19,12 @@ export const AccountList = () => {
         {
             key: '1',
             label: activeKey === "1" ? <Button type="primary">Tokens</Button> : <>Tokens</>,
-            children: (address && chain?.id) ? <TokenList chainId={chain?.id} /> : <></>,
+            children: (address && chain?.id) ? <TokenList /> : <></>,
         },
         {
             key: '2',
             label:  activeKey === "2" ? <Button type="primary">Activity</Button> : "Activity",
-            children: (address && chain?.id) ? <Activity address={address} chainId={chain?.id} /> : <></>,
+            children: (address && chain?.id) ? <Activity address={address} /> : <></>,
         },
         {
             key: '3',

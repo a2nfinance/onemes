@@ -2,7 +2,7 @@ import { Button, Card, Col, Divider, Form, Input, Row, Select } from "antd";
 import { useState } from "react";
 import QRCode from "react-qr-code";
 import { useAppSelector } from "src/controller/hooks";
-import { chainSelectors, networks } from "src/core/networks";
+import { chainIds, chainSelectors, networks } from "src/core/networks";
 import { useNetwork } from "wagmi";
 export const QRCodeGenerator = () => {
     const { selectedAccount, tokenList } = useAppSelector(state => state.account);
@@ -23,10 +23,9 @@ export const QRCodeGenerator = () => {
                     <Col span={12}>
                         <Form.Item label="Token" name={"token"} rules={[{ required: true, message: "Require token" }]}>
                             <Select size="large" options={
-
                                 [
                                     ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                    { label: networks[chain?.id].nativeToken.toUpperCase(), value: networks[chain?.id].nativeToken }
+                                    { label: networks[chainIds[selectedAccount.chain]].nativeToken.toUpperCase(), value: networks[chainIds[selectedAccount.chain]].nativeToken }
                                 ]
                             } />
                         </Form.Item>

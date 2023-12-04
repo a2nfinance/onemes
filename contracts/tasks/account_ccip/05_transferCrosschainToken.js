@@ -6,13 +6,6 @@ task("transfer-token", "transfers token x-chain from Account.sol to another addr
   .addParam("dest", "destination chain as specified in networks.js file")
   .addParam("amount", "token amount to transfer in expressed in smallest denomination (eg juels, wei)")
   .setAction(async (taskArgs, hre) => {
-    if (network.name === "hardhat") {
-      throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
-    }
-
-    if (network.name !== "fuji") {
-      throw Error("This task is intended to be executed on the Fuji network.")
-    }
 
     let bnmTokenAddress = networks[network.name].bnmToken
     if (!bnmTokenAddress) {

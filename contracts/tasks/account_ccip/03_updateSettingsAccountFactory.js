@@ -3,14 +3,9 @@ const { networks } = require("../../networks")
 task("update-settings-account-factory", "update settings of AccountFactory.sol")
     .addParam("accountfactory", "address of AccountFactory.sol")
     .addParam("onemesnaming", "address of OneMesNaming.sol")
+    .addParam("functionconsumer", "address of AutomatedFunctionsConsumer.sol")
     .setAction(async (taskArgs, hre) => {
-        const { accountfactory, onemesnaming } = taskArgs
-        if (network.name === "hardhat") {
-            throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
-        }
-        if (network.name !== "fuji") {
-            throw Error("This task is intended to be executed on the Fuji network.")
-        }
+        const { accountfactory, onemesnaming, functionconsumer } = taskArgs
 
         const ROUTER = networks[network.name].router
         const LINK = networks[network.name].linkToken
@@ -24,7 +19,8 @@ task("update-settings-account-factory", "update settings of AccountFactory.sol")
         const updateTx = await contract.updateSettings(
             ROUTER,
             LINK,
-            onemesnaming
+            onemesnaming,
+            functionconsumer
         )
         await updateTx.wait(1)
 

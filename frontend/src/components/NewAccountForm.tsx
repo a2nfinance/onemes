@@ -1,52 +1,53 @@
-import { Button, Col, DatePicker, Divider, Form, Input, Radio, Card, Alert, Row, Select } from 'antd';
+import { Alert, Button, Card, Col, Form, Input, Radio, Row, Select } from 'antd';
 import { useCallback, useState } from 'react';
-import { getWriteContractConfig, saveAccount } from 'src/core/account';
-import countryCodes from "../data/CountryCodes.json";
+import { getAccounts, getWriteContractConfig, saveAccount } from 'src/core/account';
+import { WalletStyle } from 'src/styles/wallet';
 import {
-    usePrepareContractWrite,
-    useContractWrite,
-    useWaitForTransaction,
-    useConnect,
     useAccount,
     useNetwork,
 } from 'wagmi';
+import { prepareWriteContract, writeContract, waitForTransaction } from "@wagmi/core"
+import countryCodes from "../data/CountryCodes.json";
+import { useAppDispatch } from 'src/controller/hooks';
+import { setAccounts } from 'src/controller/account/accountSlice';
 export const NewAccountForm = () => {
-    const { isConnected, address } = useAccount();
-    const { chain, chains } = useNetwork()
-    const { variables } = useConnect()
+    const { address } = useAccount();
+    const { chain } = useNetwork()
     const [form] = Form.useForm();
-    const [contractConfig, setContractConfig] = useState({});
-    const {
-        config,
-        error: prepareError,
-        isError: isPrepareError,
-    } = usePrepareContractWrite(contractConfig)
-    const { data, error, isError, write } = useContractWrite(config)
 
-    const { isLoading, isSuccess } = useWaitForTransaction({
-        hash: data?.hash,
-        onSuccess(data) {
-            console.log(data);
-            saveAccount(data, {...form.getFieldsValue(), wallet_address: address}, chain?.id);
-        },
-        onError(data) {
-            console.log(data);
-            console.log(form.getFieldsValue());
+    const [isCreating, setIsCreating] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const dispatch = useAppDispatch();
+
+    const onFinish = useCallback(async (values: any) => {
+        try {
+            setErrorMessage("");
+            setIsCreating(true);
+            const config = getWriteContractConfig(values, chain?.id);
+            const { request } = await prepareWriteContract(config)
+            const data = await writeContract(request)
+            const returnedData = await waitForTransaction({
+                hash: data.hash,
+            })
+            await saveAccount(returnedData, { ...form.getFieldsValue(), wallet_address: address }, chain?.id);
+            const accountsList = await getAccounts(address);
+            dispatch(setAccounts(accountsList));
+        } catch (e) {
+            console.log(e);
+            setErrorMessage(e.message);
         }
-    })
 
-    const onFinish = useCallback((values: any) => {
-        setContractConfig(getWriteContractConfig(values, chain?.id));
-        write?.()
-    }, [contractConfig]);
+        setIsCreating(false);
+
+    }, []);
     return (
-        <Card title={"ACCOUNT REGISTER"}>
+        <Card title={"ACCOUNT REGISTER"} style={WalletStyle}>
             <Form name={"new_account_form"} layout='vertical' onFinish={onFinish} form={form}>
                 <Form.Item name='onemes_name' label={"Name"} rules={[{ required: true, message: 'Missing Name' }]}>
-                    <Input size='large' addonAfter={".onemes"}/>
+                    <Input size='large' addonAfter={".onemes"} />
                 </Form.Item>
                 <Row gutter={10}>
-                    <Col span={10}>
+                    <Col span={12}>
                         <Form.Item name='country' initialValue={"+1 United States"} label={"Country"} rules={[{ required: true, message: 'Missing country' }]}>
                             <Select size='large' options={
                                 countryCodes.map(c => ({
@@ -56,7 +57,7 @@ export const NewAccountForm = () => {
                             } />
                         </Form.Item>
                     </Col>
-                    <Col span={14}>
+                    <Col span={12}>
                         <Form.Item name='phone_number' label={"Phone number"} rules={[{ required: true, message: 'Missing phone number' }]}>
                             <Input size='large' type='phone_number' />
                         </Form.Item>
@@ -78,19 +79,10 @@ export const NewAccountForm = () => {
                         <Radio value={false}>Use OneMes account address</Radio>
                     </Radio.Group>
                 </Form.Item>
-                {isSuccess && (
-                    <div>
-                        Successfully minted your NFT!
-                        <div>
-                            <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-                        </div>
-                    </div>
-                )}
-
-                {(isPrepareError || isError) && (
-                    <div>Error: {(prepareError || error)?.message}</div>
-                )}
-                <Button loading={isLoading} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>SUBMIT</Button>
+                {
+                    errorMessage ? <Alert type='error' message={errorMessage} showIcon={true} /> : <></>
+                }
+                <Button loading={isCreating} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>SUBMIT</Button>
             </Form>
         </Card>
     )

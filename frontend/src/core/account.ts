@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Account } from "src/controller/account/accountSlice";
 import accountAbi from "../abis/account.json";
 import factoryAbi from "../abis/account_factory.json";
-import { chainSelectors, nativeTokenAddress, networks } from "./networks";
+import { chainIds, chainSelectors, nativeTokenAddress, networks } from "./networks";
 
 
 export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: number) => {
@@ -27,6 +27,7 @@ export const getWriteContractConfig = (formValues: FormInstance<any>, chainId: n
 
 export const getExpandAccountConfig = (selectedAccount: Account, chainId: number) => {
     return {
+        chainId: chainId,
         address: networks[`${chainId}`].accountFactory,
         abi: factoryAbi,
         functionName: 'createAccount',
@@ -43,11 +44,12 @@ export const getExpandAccountConfig = (selectedAccount: Account, chainId: number
     }
 }
 
-export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress: string) => {
+export const getWithdrawConfig = (formValues: FormInstance<any>, selectedAccount: Account) => {
     const token = formValues["token"];
     if (token === nativeTokenAddress) {
         return {
-            address: accountAddress,
+            chainId: chainIds[selectedAccount.chain],
+            address: selectedAccount.onemes_account_address,
             abi: accountAbi,
             functionName: 'withdraw',
             args: [
@@ -55,7 +57,8 @@ export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress:
         }
     } else {
         return {
-            address: accountAddress,
+            chainId: chainIds[selectedAccount.chain],
+            address: selectedAccount.wallet_address,
             abi: accountAbi,
             functionName: 'withdrawToken',
             args: [
@@ -67,10 +70,11 @@ export const getWithdrawConfig = (formValues: FormInstance<any>, accountAddress:
 }
 
 
-export const getTransferConfig = (formValues: FormInstance<any>, accountAddress: string, chainId: number) => {
-    const selector = chainSelectors.filter(c => c.name === networks[chainId].name);
+export const getTransferConfig = (formValues: FormInstance<any>, selectedAccount: Account) => {
+    const selector = chainSelectors.filter(c => c.name === selectedAccount.chain);
     return {
-        address: accountAddress,
+        chainId: chainIds[selectedAccount.chain],
+        address: selectedAccount.onemes_account_address,
         abi: accountAbi,
         functionName: 'transferTokensPayLink',
         args: [
@@ -89,6 +93,7 @@ export const getTransferConfig = (formValues: FormInstance<any>, accountAddress:
 export const getUpdateConfig = (formValues: FormInstance<any>, selectedAccount: Account) => {
     let correctPhoneNumber = formValues["country"].split(" ")[0] + formValues["phone_number"];
     return {
+        chainId: chainIds[selectedAccount.chain],
         address: selectedAccount.onemes_account_address,
         abi: accountAbi,
         functionName: 'updateGeneralInfo',
@@ -119,6 +124,26 @@ export const saveAccount = async (data: any, values: any, chainId: number) => {
         chain: networks[`${chainId}`].name,
         phone_number: correctPhoneNumber,
         onemes_name: values["onemes_name"] + ".onemes",
+        onemes_account_address: accountAddress
+    };
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/account/save`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values)
+    })
+}
+
+export const expandNewAccount = async (data: any, selectedAccount: Account, chainId: number) => {
+    const accountFactoryLog = data.logs[1];
+    const contractInterface = new ethers.utils.Interface(factoryAbi);
+    const parsedLog = contractInterface.parseLog(accountFactoryLog);
+    const accountAddress = parsedLog.args[1];
+    delete selectedAccount._id;
+    let values = {
+        ...selectedAccount,
+        chain: networks[`${chainId}`].name,
         onemes_account_address: accountAddress
     };
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/account/save`, {

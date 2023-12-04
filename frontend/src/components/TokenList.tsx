@@ -3,23 +3,43 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { setTokenList } from "src/controller/account/accountSlice";
 import { useAppDispatch, useAppSelector } from "src/controller/hooks";
-import { networks } from "src/core/networks";
+import { getMumbaiAccountBalances } from "src/core/mumbaiTokenBalances";
+import { chainIds, networks } from "src/core/networks";
+import { getSepoliaAccountBalances } from "src/core/sepoliaTokenBalances";
 
-export const TokenList = ({ chainId }) => {
+export const TokenList = () => {
     const { tokenList, selectedAccount } = useAppSelector(state => state.account);
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useAppDispatch();
     useEffect(() => {
-        if (networks[chainId].name === "fuji") {
-            fetch(`${process.env.NEXT_PUBLIC_ROUTER_API}/v2/network/testnet/evm/${chainId}/address/${selectedAccount.onemes_account_address}/erc20-holdings`)
+        setIsLoading(true);
+        if (selectedAccount.chain === "fuji") {
+            fetch(`${process.env.NEXT_PUBLIC_ROUTER_API}/v2/network/testnet/evm/${chainIds["fuji"]}/address/${selectedAccount.onemes_account_address}/erc20-holdings`)
                 .then(data => data.json()).then(res => {
                     dispatch(setTokenList(res.items));
                     setIsLoading(false);
                 })
                 .catch(e => console.log(e));
         }
+        if (selectedAccount.chain === "mumbai") {
+            getMumbaiAccountBalances(selectedAccount.onemes_account_address)
+                .then(res => {
+                    dispatch(setTokenList(res));
+                    setIsLoading(false);
+                })
+                .catch(e => console.log(e));
+        }
 
-    }, [])
+        if (selectedAccount.chain === "sepolia") {
+            getSepoliaAccountBalances(selectedAccount.onemes_account_address).then(res => {
+                dispatch(setTokenList(res));
+                setIsLoading(false);
+            })
+                .catch(e => console.log(e));
+        }
+
+
+    }, [selectedAccount.onemes_account_address, selectedAccount.chain])
     return (
         <List
             className="demo-loadmore-list"

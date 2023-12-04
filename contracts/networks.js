@@ -25,12 +25,15 @@ const networks = {
     router: "0xd0daae2231e9cb96b94c8512223533293c3693bf",
     chainSelector: "16015286601757825753",
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: "THIS HAS NOT BEEN SET",
+    verifyApiKey:  process.env.SEPOLIA_VERIFY_API_KEY,
     chainId: 11155111,
     confirmations: DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "ETH",
     linkToken: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
     bnmToken: "0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05", // LINK/SEPOLIA-ETH
+    donId: "fun-ethereum-sepolia-1",
+    explorerUrl: "https://sepolia.etherscan.io",
+    rpcUrl: "https://rpc.sepolia.org"
   },
   fuji: {
     url: process.env.AVALANCHE_FUJI_RPC_URL || "THIS HAS NOT BEEN SET",
@@ -44,6 +47,9 @@ const networks = {
     nativeCurrencySymbol: "AVAX",
     linkToken: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
     bnmToken: "0xd21341536c5cf5eb1bcb58f6723ce26e8d8e90e4",
+    donId: "fun-avalanche-fuji-1",
+    explorerUrl: "https://testnet.avascan.info",
+    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc"
   },
   mumbai: {
     url: process.env.MUMBAI_RPC_URL || "THIS HAS NOT BEEN SET",
@@ -57,6 +63,9 @@ const networks = {
     nativeCurrencySymbol: "MATIC",
     linkToken: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
     bnmToken: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
+    donId: "fun-polygon-mumbai-1",
+    explorerUrl: "https://mumbai.polygonscan.com/",
+    rpcUrl: "https://rpc-mumbai.maticvigil.com"
   },
 }
 

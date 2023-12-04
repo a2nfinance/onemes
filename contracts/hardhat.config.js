@@ -58,6 +58,7 @@ module.exports = {
     apiKey: {
       sepolia: networks.sepolia.verifyApiKey,
       avalancheFujiTestnet: networks.fuji.verifyApiKey,
+      polygonMumbai: networks.mumbai.verifyApiKey
     },
   },
   gasReporter: {

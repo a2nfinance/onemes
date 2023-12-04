@@ -5,8 +5,9 @@ import { GrUpgrade } from "react-icons/gr";
 import { MdOutlineGeneratingTokens, MdOutlineSavings } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "src/controller/hooks";
 import { getAccounts, getTransferConfig, getUpdateConfig, getWithdrawConfig, updateAccount } from "src/core/account";
-import { chainSelectors, nativeTokenAddress, networks } from 'src/core/networks';
+import { chainIds, chainSelectors, nativeTokenAddress, networks } from 'src/core/networks';
 import { useNetwork } from 'wagmi';
+import { switchNetwork } from '@wagmi/core';
 import countryCodes from "../data/CountryCodes.json";
 import { setAccounts } from 'src/controller/account/accountSlice';
 export const Actions = () => {
@@ -46,9 +47,13 @@ export const Actions = () => {
 
     const onFinishWM = useCallback(async (values: any) => {
         try {
+            console.log(chain?.id, chainIds[selectedAccount.chain]);
+            if (chain?.id !== chainIds[selectedAccount.chain]) {
+                await switchNetwork({ chainId: chainIds[selectedAccount.chain] });
+            }
             setIsWithdrawing(true);
             setIsWihtdrawModalOpen(false);
-            const config = getWithdrawConfig(values, selectedAccount.onemes_account_address);
+            const config = getWithdrawConfig(values, selectedAccount);
             const { request } = await prepareWriteContract(config)
             const { hash } = await writeContract(request)
             await waitForTransaction({
@@ -59,13 +64,16 @@ export const Actions = () => {
         }
 
         setIsWithdrawing(false);
-    }, []);
+    }, [selectedAccount.chain, chain?.id]);
 
     const onFinishSM = useCallback(async (values: any) => {
         try {
+            if (chain?.id !== chainIds[selectedAccount.chain]) {
+                await switchNetwork({ chainId: chainIds[selectedAccount.chain] });
+            }
             setIsSending(true);
             setIsSendModalOpen(false);
-            const config = getTransferConfig(values, selectedAccount.onemes_account_address, chain?.id);
+            const config = getTransferConfig(values, selectedAccount);
             const { request } = await prepareWriteContract(config)
             const { hash } = await writeContract(request)
             await waitForTransaction({
@@ -76,11 +84,14 @@ export const Actions = () => {
         }
 
         setIsSending(false);
-    }, []);
+    }, [selectedAccount.chain, chain?.id]);
 
 
     const onFinishUM = useCallback(async (values: any) => {
         try {
+            if (chain?.id !== chainIds[selectedAccount.chain]) {
+                await switchNetwork({ chainId: chainIds[selectedAccount.chain] });
+            }
             setIsUpdating(true);
             setIsUpdateModalOpen(false);
             const config = getUpdateConfig(values, selectedAccount);
@@ -97,7 +108,7 @@ export const Actions = () => {
         }
 
         setIsUpdating(false);
-    }, []);
+    }, [selectedAccount.chain, chain?.id]);
 
     const actionsStyle = { width: 80, height: 80, backgroundColor: "#272626", padding: 10, borderRadius: 16 };
     const subtitleFont = { fontSize: 12 };
@@ -127,7 +138,7 @@ export const Actions = () => {
                         <Select size="large" value={nativeTokenAddress} options={
                             [
                                 ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
+                                { label: networks[chainIds[selectedAccount.chain]].nativeToken.toUpperCase(), value: nativeTokenAddress }
                             ]
                         } />
                     </Form.Item>
@@ -166,7 +177,7 @@ export const Actions = () => {
                                 <Select size="large" options={
                                     [
                                         ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
-                                        { label: networks[chain?.id].nativeToken.toUpperCase(), value: nativeTokenAddress }
+                                        { label: networks[chainIds[selectedAccount.chain]].nativeToken.toUpperCase(), value: nativeTokenAddress }
                                     ]
                                 } />
                             </Form.Item>
