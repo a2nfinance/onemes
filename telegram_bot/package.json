@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev": "node ./src/bot"
+  },
   "dependencies": {
     "dotenv": "^16.3.1",
     "node-telegram-bot-api": "^0.64.0"
