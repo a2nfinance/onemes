@@ -7,7 +7,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/start (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Thank you for using OneMes. You can use '/search' to search any OneMes account and '/transfer' to transfer token.");
+    bot.sendMessage(chatId, "Thank you for being a part of OneMes. Feel free to utilize '/search' to find any OneMes account and '/transfer' to initiate token transfers. For same-chain transfers, you can use '/transfer TR {token name} {token amount} {receiver account}'. If you prefer cross-chain transfers, employ '/transfer CTR {source chain name} {token name} {token amount} {destination chain} {receiver account}'. Here's an example: '/transfer TR avax 0.001 levi.onemes' or '/transfer CTR sepolia CCIP-BnM 0.0001 fuji levi01@a2n.finance'.");
 });
 
 
@@ -19,7 +19,7 @@ bot.onText(/\/search (.+)/, (msg, match) => {
         bot.sendMessage(chatId, `${data}`);
     }).catch((e) => {
         console.log(e);
-        bot.sendMessage(chatId, `Could not found information of account ${resp}`);
+        bot.sendMessage(chatId, `Account ${resp} information not found.`);
     })
     
 });
@@ -32,7 +32,7 @@ bot.onText(/\/transfer (.+)/, (msg, match) => {
         bot.sendMessage(chatId, `${data}`);
     }).catch((e) => {
         console.log(e);
-        bot.sendMessage(chatId, `Could not found information of account ${resp}`);
+        bot.sendMessage(chatId, `Account ${resp} information not found.`);
     })
     
 });

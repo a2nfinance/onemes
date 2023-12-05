@@ -63,7 +63,7 @@ const searchAccounts = async (name) => {
 const saveTransferRequest = async (sender, message, messageId) => {
     try {
         console.log(sender, message, messageId)
-        await fetch(`${process.env.API_URL}/api/telegram/save-request`, {
+        const req = await fetch(`${process.env.API_URL}/api/telegram/save-request`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -75,10 +75,16 @@ const saveTransferRequest = async (sender, message, messageId) => {
                 type: 2
             })
         })
-        return "Your transfer token request has been sent. Once the transaction is completed, you will receive a message!"
+        const res = await req.json();
+        if (res.success) {
+            return `Your transfer token request with ID #${res.request._id} has been successfully processed. Upon completion of the transaction, you will receive a confirmation message.`
+        } else {
+            return "An error occurred! Kindly resend a correct request to proceed."
+        }
+        
     } catch(e) {
         console.log(e)
-        return "An error occured! please send a correct request again!"
+        return "An error occurred! Kindly resend a correct request to proceed."
     }
 }
 

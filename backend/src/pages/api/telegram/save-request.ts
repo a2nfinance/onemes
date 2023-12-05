@@ -3,7 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import Request from "@/database/models/request";
 
 type Data = {
-    success: boolean
+    success: boolean,
+    request?: any
 }
 
 async function handler(
@@ -22,7 +23,7 @@ async function handler(
                 let request = new Request(req.body);
 
                 await request.save();
-                res.status(200).send({ success: true });
+                res.status(200).send({ success: true, request: request });
             } else {
                 res.status(422).send({ success: false });
             }

@@ -7,9 +7,9 @@ const bot = new TelegramBot(token, { polling: false });
 export const sendNoti = (requestId: string, sender: string, status: number) => {
 
     if(status) {
-        bot.sendMessage(sender, `Your token is transfered successful  (#${requestId})`);
+        bot.sendMessage(sender, `Your token transfer was successful with the request ID #${requestId}`);
        
     } else {
-        bot.sendMessage(sender, `Fail to transfer token (#${requestId}), please try again!`);
+        bot.sendMessage(sender, `Token transfer with request ID #${requestId} failed. Please attempt the transfer again.`);
     }
 }
