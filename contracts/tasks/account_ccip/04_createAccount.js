@@ -1,12 +1,12 @@
 
-task("setup-sender", "deploy Account.sol")
+task("create-account", "deploy Account.sol")
   .addParam("accountfactory", "address of AccountFactory.sol")
   .addParam("name", "name")
   .addParam("email", "email")
   .addParam("phonenumber", "name")
   .addParam("twitter", "name")
   .addParam("telegram", "name")
-  .addParam("use_wallet_address_to_receive", "use_wallet_address_to_receive")
+  .addParam("usewalletaddresstoreceive", "use_wallet_address_to_receive")
   .setAction(async (taskArgs, hre) => {
     const { accountfactory, name, email, phonenumber, twitter, telegram, use_wallet_address_to_receive } = taskArgs;
     console.log("\n__Compiling Contracts__")

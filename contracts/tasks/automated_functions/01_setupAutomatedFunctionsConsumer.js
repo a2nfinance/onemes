@@ -1,7 +1,7 @@
 const { networks } = require("../../networks")
 
 task("setup-automated-consumer", "deploy AutomatedFunctionsConsumer.sol").setAction(async (taskArgs, hre) => {
-  const routerAddress = networks[network.name].router
+  const routerAddress = networks[network.name].functionRouter
   console.log("\n__Compiling Contracts__")
   await run("compile")
 

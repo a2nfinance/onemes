@@ -7,7 +7,7 @@ task("update-settings-account-factory", "update settings of AccountFactory.sol")
     .setAction(async (taskArgs, hre) => {
         const { accountfactory, onemesnaming, functionconsumer } = taskArgs
 
-        const ROUTER = networks[network.name].router
+        const ROUTER = networks[network.name].ccipRouter
         const LINK = networks[network.name].linkToken
 
         console.log("\n__Compiling Contracts__")
