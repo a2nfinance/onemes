@@ -57,7 +57,7 @@ const networks = {
     chainSelector: "12532609583862916517",
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: "THIS HAS NOT BEEN SET",
+    verifyApiKey: process.env.MUMBAI_VERIFY_API_KEY,
     chainId: 80001,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "MATIC",

@@ -17,27 +17,14 @@ async function handler(
             // need to validate
             if (req.body) {
                 console.log("Results:", req.body);
-                const results = JSON.parse(req.body);
-                const ids = results.map(r => r.split("_"));
-                for (let i = 0; i < ids.length; i++) {
-                    try {
-                        let request = await Request.findOneAndUpdate({_id: ids[i][0], status: 3}, {
-                            status: ids[i][1] === "1" ? 1 : 2
-                        });
-                        
-                        if (request && request.type === 2) {
-                            sendNoti(ids[i][0], request.sender, parseInt(ids[i][1]));
-                        }
-    
-                        if (request && request.type === 1) {
-                            sendSMSMessage(ids[i][0], request.sender, parseInt(ids[i][1]));
-                        }
-                    } catch(e) {
-                        console.log(e);
-                    }
-                   
+                const ids = req.body;
 
-                }
+                await Request.updateMany(
+                    { _id: { $in: ids } },
+                    { $set: { status: 3 } },
+                    { multi: true }
+                )
+
                 res.status(200).send({ success: true });
             } else {
                 res.status(422).send({ success: false });

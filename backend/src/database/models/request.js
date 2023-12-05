@@ -19,7 +19,7 @@ let request = new Schema({
         required: false
     },
     status: {
-        type: Number, // 0: pending, 1: success, 2: fail
+        type: Number, // 0: pending, 1: success, 2: fail, 3: processing
         required: true,
         default: 0
     },

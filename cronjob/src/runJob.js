@@ -274,7 +274,19 @@ const doJob = async () => {
                 pendingRequests[0]
             )
             await sendTokensTx.wait(1)
-            console.log("\nTx hash is ", sendTokensTx.hash)
+            console.log("\nTx hash is ", sendTokensTx.hash);
+
+            const requestIds = requestsOnFuji.map(r => r._id);
+
+            // Update request here
+
+            await fetch(`${process.env.API_URL}/api/request/update-processing`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestIds)
+            })
         }
 
         if (contractOnMumbai && requestsOnMumbai.length) {
@@ -291,7 +303,14 @@ const doJob = async () => {
                 ]))
             )
             await sendTokensTx.wait(1)
-            console.log("\nTx hash is ", sendTokensTx.hash)
+            console.log("\nTx hash is ", sendTokensTx.hash);
+            await fetch(`${process.env.API_URL}/api/request/update-processing`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestIds)
+            })
         }
 
         if (contractOnSepolia && requestsOnSepolia.length) {
@@ -308,10 +327,15 @@ const doJob = async () => {
                 ]))
             )
             await sendTokensTx.wait(1)
-            console.log("\nTx hash is ", sendTokensTx.hash)
+            console.log("\nTx hash is ", sendTokensTx.hash);
+            await fetch(`${process.env.API_URL}/api/request/update-processing`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestIds)
+            })
         }
-
-        processing = false;
         counter++;
         requestsOnFuji = [];
         requestsOnMumbai = [];
@@ -319,6 +343,8 @@ const doJob = async () => {
     } catch (e) {
         console.log(e);
     }
+
+    processing = false;
 }
 cron.schedule('*/5 * * * * *', async () => {
     await doJob()

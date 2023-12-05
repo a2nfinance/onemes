@@ -140,12 +140,13 @@ export const expandNewAccount = async (data: any, selectedAccount: Account, chai
     const contractInterface = new ethers.utils.Interface(factoryAbi);
     const parsedLog = contractInterface.parseLog(accountFactoryLog);
     const accountAddress = parsedLog.args[1];
-    delete selectedAccount._id;
     let values = {
         ...selectedAccount,
         chain: networks[`${chainId}`].name,
         onemes_account_address: accountAddress
     };
+
+    delete values._id;
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/account/save`, {
         method: "POST",
         headers: {
