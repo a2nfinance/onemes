@@ -276,7 +276,7 @@ const doJob = async () => {
             await sendTokensTx.wait(1)
             console.log("\nTx hash is ", sendTokensTx.hash);
 
-            const requestIds = requestsOnFuji.map(r => r._id);
+            const requestIds = requestsOnFuji.map(r => r.requestId);
 
             // Update request here
 
@@ -304,6 +304,8 @@ const doJob = async () => {
             )
             await sendTokensTx.wait(1)
             console.log("\nTx hash is ", sendTokensTx.hash);
+
+            const requestIds = requestsOnMumbai.map(r => r.requestId);
             await fetch(`${process.env.API_URL}/api/request/update-processing`, {
                 method: "POST",
                 headers: {
@@ -328,6 +330,8 @@ const doJob = async () => {
             )
             await sendTokensTx.wait(1)
             console.log("\nTx hash is ", sendTokensTx.hash);
+
+            const requestIds = requestsOnSepolia.map(r => r.requestId);
             await fetch(`${process.env.API_URL}/api/request/update-processing`, {
                 method: "POST",
                 headers: {
