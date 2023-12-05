@@ -68,7 +68,7 @@ const networks = {
     bnmToken: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
     donId: "fun-polygon-mumbai-1",
     explorerUrl: "https://mumbai.polygonscan.com/",
-    rpcUrl: "https://rpc-mumbai.maticvigil.com"
+    rpcUrl: "https://rpc-mumbai.polygon.technology"
   },
 }
 

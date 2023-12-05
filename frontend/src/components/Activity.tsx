@@ -21,7 +21,7 @@ export const Activity = ({ address }) => {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         if (selectedAccount.chain === "fuji") {
-            fetch(`${process.env.NEXT_PUBLIC_ROUTER_API}/v2/network/testnet/evm/${chainIds["fuji"]}/address/${address}/transactions`)
+            fetch(`${process.env.NEXT_PUBLIC_ROUTER_API}/v2/network/testnet/evm/${chainIds["fuji"]}/address/${selectedAccount.onemes_account_address}/transactions`)
                 .then(data => data.json()).then(res => {
                     setTransactions(res.items);
                     setIsLoading(false);

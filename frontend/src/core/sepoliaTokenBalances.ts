@@ -21,7 +21,7 @@ export const getSepoliaAccountBalances = async (address: string) => {
 
   // Counter for SNo of final output
   let i = 1;
-  let tokenBalances: { tokenName: string, tokenSymbol: string, tokenQuantity: string }[] = [];
+  let tokenBalances: { tokenName: string, tokenSymbol: string, tokenQuantity: string, tokenAddress: string }[] = [];
   // Loop through all tokens with non-zero balance
   for (let token of nonZeroBalances) {
     // Get balance of token
@@ -36,7 +36,8 @@ export const getSepoliaAccountBalances = async (address: string) => {
     tokenBalances.push({
       tokenName: metadata.name,
       tokenSymbol: metadata.symbol,
-      tokenQuantity: balance
+      tokenQuantity: balance,
+      tokenAddress: token.contractAddress
     })
 
     // Print name, balance, and symbol of token

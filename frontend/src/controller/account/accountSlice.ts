@@ -60,6 +60,7 @@ export const accountSlice = createSlice({
         setAccounts: (state: AccountState, action: PayloadAction<any[]>) => {
             state.accounts = action.payload;
             if (action.payload.length) {
+                console.log(action.payload);
                 state.selectedAccount = action.payload[0]
             }
         },

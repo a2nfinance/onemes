@@ -3,7 +3,7 @@ export const networks = {
         accountFactory: process.env.NEXT_PUBLIC_FUJI_ACCOUNT_FACTORY,
         name: "fuji",
         nativeToken: "avax",
-        explorerUrl: "https://testnet.avascan.info",
+        explorerUrl: "https://testnet.snowtrace.io",
     },
     "11155111": {
         accountFactory: process.env.NEXT_PUBLIC_SEPOLIA_ACCOUNT_FACTORY,

@@ -12,15 +12,17 @@ import {
     useDisconnect,
     useEnsAvatar,
     useEnsName,
+    useNetwork,
 } from 'wagmi'
 export default function Index() {
     const [client, setClient] = useState(false);
+    const { chain } = useNetwork();
     const { address, connector, isConnected } = useAccount()
     const { data: ensName } = useEnsName({ address })
     const { data: ensAvatar } = useEnsAvatar({ name: ensName })
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
     const { disconnect } = useDisconnect();
-    const {accounts} = useAppSelector(state => state.account);
+    const { accounts } = useAppSelector(state => state.account);
     const dispatch = useAppDispatch();
 
     const items: TabsProps['items'] = [
@@ -36,23 +38,23 @@ export default function Index() {
         }
     ];
 
-    async function getCurrentAccounts() {
+    async function getCurrentAccounts(address) {
         const accountsList = await getAccounts(address);
         dispatch(setAccounts(accountsList));
     }
 
     useEffect(() => {
         setClient(true);
-        getCurrentAccounts();
+        getCurrentAccounts(address);
     }, [address])
 
 
     if (isConnected && client) {
         return (
-                <div style={{ maxWidth: 420, marginRight: "auto", marginLeft: "auto", padding: 20, height: "100%" }}>
-                    {accounts.length ? <AccountList/> : <NewAccountForm />}
-                    <FloatButton icon={<QuestionCircleOutlined />} type="default" style={{ right: 94 }} />
-                </div>
+            <div style={{ maxWidth: 420, marginRight: "auto", marginLeft: "auto", padding: 20, height: "100%" }}>
+                {accounts.length ? <AccountList /> : <NewAccountForm />}
+                <FloatButton icon={<QuestionCircleOutlined />} type="default" style={{ right: 94 }} />
+            </div>
         )
     }
 

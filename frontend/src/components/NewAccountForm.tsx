@@ -6,10 +6,11 @@ import {
     useAccount,
     useNetwork,
 } from 'wagmi';
-import { prepareWriteContract, writeContract, waitForTransaction } from "@wagmi/core"
+import { prepareWriteContract, writeContract, waitForTransaction, switchNetwork } from "@wagmi/core"
 import countryCodes from "../data/CountryCodes.json";
 import { useAppDispatch } from 'src/controller/hooks';
 import { setAccounts } from 'src/controller/account/accountSlice';
+import { chainIds } from 'src/core/networks';
 export const NewAccountForm = () => {
     const { address } = useAccount();
     const { chain } = useNetwork()
@@ -23,13 +24,16 @@ export const NewAccountForm = () => {
         try {
             setErrorMessage("");
             setIsCreating(true);
-            const config = getWriteContractConfig(values, chain?.id);
+            if (chain?.id !== chainIds["fuji"]) {
+                await switchNetwork({ chainId: chainIds["fuji"] });
+            }
+            const config = getWriteContractConfig(values, chainIds["fuji"]);
             const { request } = await prepareWriteContract(config)
             const data = await writeContract(request)
             const returnedData = await waitForTransaction({
                 hash: data.hash,
             })
-            await saveAccount(returnedData, { ...form.getFieldsValue(), wallet_address: address }, chain?.id);
+            await saveAccount(returnedData, { ...form.getFieldsValue(), wallet_address: address }, chainIds["fuji"]);
             const accountsList = await getAccounts(address);
             dispatch(setAccounts(accountsList));
         } catch (e) {
