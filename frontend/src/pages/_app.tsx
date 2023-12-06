@@ -5,7 +5,10 @@ import { useEffect, useState } from 'react';
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
 import { avalancheFuji, polygonMumbai, sepolia } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { store } from 'src/controller/store';
 import { ConfigProvider, theme } from 'antd';
 const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -21,7 +24,26 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const config = createConfig({
   autoConnect: true,
   connectors: [
-    new MetaMaskConnector({ chains })
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: 'wagmi',
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID,
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    }),
   ],
   publicClient,
   webSocketPublicClient,

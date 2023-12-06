@@ -1,5 +1,5 @@
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, FloatButton, Tabs, TabsProps } from "antd";
+import { Alert, Button, Card, FloatButton, Space, Tabs, TabsProps, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { AccountList } from "src/components/AccountList";
 import { NewAccountForm } from "src/components/NewAccountForm";
@@ -13,7 +13,9 @@ import {
     useEnsAvatar,
     useEnsName,
     useNetwork,
-} from 'wagmi'
+} from 'wagmi';
+
+const { Title, Text } = Typography;
 export default function Index() {
     const [client, setClient] = useState(false);
     const { chain } = useNetwork();
@@ -59,22 +61,35 @@ export default function Index() {
     }
 
     return (
-        client && <div>
-            {connectors.map((connector) => (
-                <Button
-                    size="large"
-                    type="primary"
-                    disabled={!connector.ready}
-                    key={connector.id}
-                    loading={isLoading &&
-                        connector.id === pendingConnector?.id}
-                    onClick={() => connect({ connector })}
-                >
-                    {!connector?.ready ? `${connector?.name} (unsupported)` : connector?.name}
-                </Button>
-            ))}
+        client && <Card
+            style={{
+                width: "420px",
+                marginRight: "auto",
+                marginLeft: "auto",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)"
+            }}>
+            <Space direction="vertical" style={{ width: "100%", textAlign: "center" }}>
+                <Title level={3}>ONE MES</Title>
+                <Text>Instant Token Transfers with Just One Message: Simplifying Crypto Transactions, Anywhere, Anytime!</Text>
+                {connectors.map((connector) => (
+                    <Button
+                        style={{ width: "100%" }}
+                        size="large"
+                        type="primary"
+                        disabled={!connector.ready}
+                        key={connector.id}
+                        loading={isLoading &&
+                            connector.id === pendingConnector?.id}
+                        onClick={() => connect({ connector })}
+                    >
+                        {!connector?.ready ? `${connector?.name} (unsupported)` : connector?.name}
+                    </Button>
+                ))}
 
-            {error && <div>{error.message}</div>}
-        </div>
+                {error && <Alert type="error" message={error.message} showIcon />}
+            </Space></Card>
     )
 }
