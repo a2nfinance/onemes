@@ -1,4 +1,4 @@
-import { List, Skeleton, Table } from "antd";
+import { List, Skeleton, Typography } from "antd";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { setTokenList } from "src/controller/account/accountSlice";
@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "src/controller/hooks";
 import { getMumbaiAccountBalances } from "src/core/mumbaiTokenBalances";
 import { chainIds, networks } from "src/core/networks";
 import { getSepoliaAccountBalances } from "src/core/sepoliaTokenBalances";
-
+const {Text} = Typography;
 export const TokenList = () => {
     const { tokenList, selectedAccount } = useAppSelector(state => state.account);
     const [isLoading, setIsLoading] = useState(true);
@@ -58,7 +58,7 @@ export const TokenList = () => {
                 <List.Item>
                     <Skeleton avatar title={false} loading={item.loading} active>
                         <List.Item.Meta
-                            title={<a href="https://ant.design">{item.tokenSymbol}</a>}
+                            title={<a href={`${networks[chainIds[selectedAccount.chain]].explorerUrl}/address/${item.tokenAddress}`} target="_blank">{item.tokenSymbol}</a>}
                             description={item.tokenName}
                         />
                         <div>{ethers.utils.formatEther(item.tokenQuantity)}</div>
@@ -66,7 +66,5 @@ export const TokenList = () => {
                 </List.Item>
             )}
         />
-
-
     )
 }

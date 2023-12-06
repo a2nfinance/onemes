@@ -1,15 +1,15 @@
-import { prepareWriteContract, waitForTransaction, writeContract } from '@wagmi/core';
-import { Button, Col, Flex, Form, Input, Modal, Radio, Row, Select } from "antd";
+import { prepareWriteContract, switchNetwork, waitForTransaction, writeContract } from '@wagmi/core';
+import { Alert, Button, Col, Divider, Flex, Form, Input, Modal, Radio, Row, Select, Typography } from "antd";
 import { useCallback, useState } from "react";
 import { GrUpgrade } from "react-icons/gr";
 import { MdOutlineGeneratingTokens, MdOutlineSavings } from "react-icons/md";
+import { setAccounts } from 'src/controller/account/accountSlice';
 import { useAppDispatch, useAppSelector } from "src/controller/hooks";
 import { getAccounts, getTransferConfig, getUpdateConfig, getWithdrawConfig, updateAccount } from "src/core/account";
 import { chainIds, chainSelectors, nativeTokenAddress, networks } from 'src/core/networks';
 import { useNetwork } from 'wagmi';
-import { switchNetwork } from '@wagmi/core';
 import countryCodes from "../data/CountryCodes.json";
-import { setAccounts } from 'src/controller/account/accountSlice';
+const { Text } = Typography;
 export const Actions = () => {
     const { chain } = useNetwork();
     const { tokenList, selectedAccount } = useAppSelector(state => state.account);
@@ -19,6 +19,7 @@ export const Actions = () => {
     const [isSending, setIsSending] = useState(false);
     const [isWithdrawing, setIsWithdrawing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isShowGuideModal, setIsShowGuideModal] = useState(false);
     const dispatch = useAppDispatch();
 
     const showWithdrawModal = () => {
@@ -43,6 +44,14 @@ export const Actions = () => {
 
     const handleUMCancel = () => {
         setIsUpdateModalOpen(false);
+    }
+
+    const showGuideModal = () => {
+        setIsShowGuideModal(true);
+    }
+
+    const handleCancelGuideModal = () => {
+        setIsShowGuideModal(false);
     }
 
     const onFinishWM = useCallback(async (values: any) => {
@@ -114,6 +123,10 @@ export const Actions = () => {
     const subtitleFont = { fontSize: 12 };
     return (
         <>
+            <Alert type='info' message={
+                <Text>To initiate token transfers, whether offline or online through messaging, <a onClick={showGuideModal}>click here.</a></Text>
+            } showIcon />
+            <br />
             <Flex justify='space-between'>
                 <Flex align="center" justify='center' vertical style={actionsStyle}>
                     <Button icon={<MdOutlineSavings style={{ fontSize: "20" }} />} onClick={showWithdrawModal} loading={isWithdrawing} type="primary" />
@@ -238,6 +251,34 @@ export const Actions = () => {
                     </Form.Item>
                     <Button loading={isUpdating} htmlType='submit' type='primary' size='large' style={{ width: "100%" }}>SUBMIT</Button>
                 </Form>
+            </Modal>
+
+
+            <Modal style={{ maxWidth: 350 }} title="How to use messaging" open={isShowGuideModal} footer={false} onCancel={handleCancelGuideModal}>
+                <Text>
+                    If you're using SMS, send a message to the number {process.env.NEXT_PUBLIC_TWILIO_GLOBAL_NUMBER}.
+                </Text>
+                <p>To transfer tokens on Avalanche Fuji:  </p>
+                <p>- <i>TR token_name token_amount receiver_info</i></p>
+                <p>To transfer tokens between chains:</p>
+                <p>- <i>CTR source_chain crosschain_token_name crosschain_token_amount destination_chain receiver_info</i></p>
+                <Text>
+                If you're using the Telegram chatbot, send a message to <a href='http://t.me/Onemes_a2n_bot' target='_blank'>Onemes</a> and follow the provided guides.
+                </Text>
+                <Divider />
+                <Text>Notes:</Text>
+                <p>
+                    - The source chain and destination chain can be one of Fuji, Sepolia, or Mumbai.
+                </p>
+                <p>
+                    -The token name can be one of the native token, Link token, USDT, USDC, and so on.
+                </p>
+                <p>
+                    - The crosschain token name can be one of CCIP-BnM or CCIP-LnM.
+                </p>
+                <p>
+                    - The receiver info can be a friendly name (abc.onemes), email, phone number, Twitter, or Telegram ID.
+                </p>
             </Modal>
 
         </>

@@ -39,7 +39,7 @@ export const AccountList = () => {
     ];
 
     return (
-        <Card style={WalletStyle}>
+        <Card>
             <GeneralInfo />
             <Actions />
             <Tabs items={items} onChange={(activeKey) => setActiveKey(activeKey)} centered />

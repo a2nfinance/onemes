@@ -1,16 +1,16 @@
+import { prepareWriteContract, switchNetwork, waitForTransaction, writeContract } from "@wagmi/core";
 import { Alert, Button, Card, Col, Form, Input, Radio, Row, Select } from 'antd';
 import { useCallback, useState } from 'react';
+import { setAccounts } from 'src/controller/account/accountSlice';
+import { useAppDispatch } from 'src/controller/hooks';
 import { getAccounts, getWriteContractConfig, saveAccount } from 'src/core/account';
+import { chainIds } from 'src/core/networks';
 import { WalletStyle } from 'src/styles/wallet';
 import {
     useAccount,
     useNetwork,
 } from 'wagmi';
-import { prepareWriteContract, writeContract, waitForTransaction, switchNetwork } from "@wagmi/core"
 import countryCodes from "../data/CountryCodes.json";
-import { useAppDispatch } from 'src/controller/hooks';
-import { setAccounts } from 'src/controller/account/accountSlice';
-import { chainIds } from 'src/core/networks';
 export const NewAccountForm = () => {
     const { address } = useAccount();
     const { chain } = useNetwork()
@@ -24,6 +24,7 @@ export const NewAccountForm = () => {
         try {
             setErrorMessage("");
             setIsCreating(true);
+            // Check database here
             if (chain?.id !== chainIds["fuji"]) {
                 await switchNetwork({ chainId: chainIds["fuji"] });
             }
