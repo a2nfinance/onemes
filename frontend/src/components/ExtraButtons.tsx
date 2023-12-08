@@ -8,12 +8,6 @@ export const ExtraButtons = () => {
             <FloatButton onClick={() => window.open("https://github.com/a2nfinance/onemes/issues", "_blank")} tooltip={"Report an issue"} />
             <FloatButton.BackTop visibilityHeight={0} />
         </FloatButton.Group>
-        {/* <FloatButton.Group shape="square" style={{ right: 94 }}>
-            <FloatButton icon={<QuestionCircleOutlined />} />
-            <FloatButton />
-            <FloatButton icon={<SyncOutlined />} />
-            <FloatButton.BackTop visibilityHeight={0} />
-        </FloatButton.Group> */}
     </>
     )
 }
