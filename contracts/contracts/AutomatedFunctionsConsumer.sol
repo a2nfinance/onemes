@@ -42,7 +42,7 @@ contract AutomatedFunctionsConsumer is
     Structs.PendingTransferRequest calldata _pendingTransferRequest
   ) external override onlyOwner returns (uint256) {
     _pendingTransferRequests.push(_pendingTransferRequest);
-    emit UpdatePendingTransferRequest();
+    emit UpdatePendingTransferRequest(_pendingTransferRequests.length);
     return _pendingTransferRequests.length;
   }
 
@@ -53,18 +53,18 @@ contract AutomatedFunctionsConsumer is
       _pendingTransferRequests.push(requests[i]);
     }
 
-    emit UpdatePendingTransferRequests();
+    emit UpdatePendingTransferRequests(_pendingTransferRequests.length);
     return _pendingTransferRequests.length;
   }
 
   function deletePendingTransferRequest(uint256 index) external override onlyOwner {
     delete _pendingTransferRequests[index];
-    emit DeletePendingTransferRequest();
+    emit DeletePendingTransferRequest(index);
   }
 
   function clearPendingTransferRequests() external override onlyOwner {
     delete _pendingTransferRequests;
-    emit ClearPendingTransferRequests();
+    emit ClearPendingTransferRequests(_pendingTransferRequests.length);
   }
 
   function sendRequest(string[] memory args, bytes[] memory bytesArgs) internal returns (bytes32 requestId) {

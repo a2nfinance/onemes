@@ -6,22 +6,26 @@ import "./Account.sol";
 import "./interfaces/IOneMesNaming.sol";
 import "./structs/Structs.sol";
 
+/**
+ * @title  AccountFactory contract.
+ * @author levi@a2n.finance
+ * @notice this contract to create new account and generate new friendly name.
+ */
 contract AccountFactory is IAccountFactory, Ownable {
-  // ChainlinkRouter
-
+  // Chainlink CCIP router
   address private _router;
-
+  // Link token
   address private _linkToken;
-
+  // Address of AutomatedFunctionsConsumer.sol
   address private _functionConsumerAddress;
 
   IOneMesNaming private _oneMesNaming;
 
   function createAccount(Structs.Account memory account) external override {
     // Create account contract
-
     Account createdAccount = new Account(account, _router, _linkToken, _functionConsumerAddress, msg.sender);
 
+    // Create new friendly name
     _oneMesNaming.createName(account.name, address(createdAccount));
 
     emit CreateAccount(msg.sender, address(createdAccount), account);

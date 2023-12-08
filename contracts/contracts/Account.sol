@@ -7,6 +7,11 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interface
 import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
 import "./structs/Structs.sol";
 
+/**
+ * @title  AA contract.
+ * @author levi@a2n.finance
+ * @notice check IAccount.sol for functions' coding comments
+ */
 contract Account is IAccount {
   string private _name;
   string private _email;
@@ -18,13 +23,12 @@ contract Account is IAccount {
   address public functionConsumerAddress;
 
   // ChainlinkRouter
-
   IRouterClient private s_router;
 
+  // LinkToken
   LinkTokenInterface private s_linkToken;
 
-  // Modifier
-
+  // Modifiers
   modifier onlyOwner() {
     require(msg.sender == owner, "Not owner");
     _;
