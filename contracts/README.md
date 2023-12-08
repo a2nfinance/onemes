@@ -1,7 +1,7 @@
 
-## Using Chainlink technologies
-- Smart contract uses Chainlink Automation & Chainlink Functions: [AutomatedFunctionsConsumer](./contracts/AutomatedFunctionsConsumer.sol)
-- Smart contract uses Chainlink CCIP: [AA contract](./contracts/Account.sol)
+## Utilizing Chainlink technologies
+- The smart contract utilizes Chainlink Automation & Chainlink Functions: [AutomatedFunctionsConsumer](./contracts/AutomatedFunctionsConsumer.sol)
+- The smart contract utilizes Chainlink CCIP: [AA contract](./contracts/Account.sol)
 ## Chainlink Upkeeps & Subscriptions
 
 |       | Upkeep | Subscription ID |
@@ -16,9 +16,9 @@
 | Fuji | [0xCCDCa49Ad92dEf73086Da6C2764423244E014283]() | [0x495A7D42F489b5E72034719cF2CeC262E8b5a1e3]() |  [0xF71363E8dAdEFfBA0C3eE4e26d8Db257c35CB7AE]() |
 | Sepolia | [0x4A7DCFe1C7B40770c033D62c6495b07dFb0f0bCA]() | [0xE4E4F631a30afa57D966255f254365C51b70F1C0]() | [0x7CC6e9B08Fd0300bfE933da7E2C1046C29cbA0e6]() |
 | Mumbai | [0x42ec2Adc09D713133386dFCC9b1Af9c560Fa814f]() | [0x606d8EF65f243CAaC6faF739650CDaa5F6160f5d]() | [0x05CF0F6cB2F26CF94e3f9e39AfB5632C38D3d6c0]() |
-## How to deploy contract from scratch
+## How to deploy contracts from scratch
 
-### Step to deploy
+### Steps to deploy
 - Deploy & Verify OneMesNaming.sol
     - Use: ```npx hardhat setup-onemes-naming  --network {network name} --show-stack-traces ```
 - Deploy & Verify AutomatedFunctionsConsumer.sol
