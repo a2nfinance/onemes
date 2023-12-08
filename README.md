@@ -36,6 +36,7 @@ To understand source code, you should have basic knowlege of:
     - ```cd carbon-credit-mkp ``` -> ```npm i```
 
 **Step 3: Deploy smart contracts**
+
 Read this file [README.md](./contracts/README.md) for more details.
 
 **Step 4: Setup .env**

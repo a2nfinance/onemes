@@ -1,14 +1,3 @@
-// exports.setupSender = require("./01_setupSender.js");
-// exports.transferToken = require("./02_transferToken.js");
-// exports.setupAutomatedConsumer = require("./03_setupAutomatedConsumer.js");
-// exports.addPendingRequest = require("./04_addPendingRequest.js");
-// exports.checkUpkeep = require("./05_checkUpkeep.js");
-// exports.setUpkeepContract = require("./06_setUpkeepContract.js");
-// exports.addCrosschainTransferRequest = require("./07_addCrosschainTransferRequest.js");
-// exports.manualPerformUpkeep = require("./08_manualPerformUpkeep.js");
-// exports.deleteTransferRequest = require("./09_deleteTransferRequest.js");
-// exports.clearTransferRequests = require("./10_clearTransferRequests.js");
-
 exports.setupOneMesNaming = require("./account_ccip/01_setupOneMesNaming");
 exports.setupAccountFactory = require("./account_ccip/02_setupAccountFactory");
 exports.updateSettingsAccountFactory = require("./account_ccip/03_updateSettingsAccountFactory");
@@ -19,3 +8,5 @@ exports.updateFunctionAPI = require("./automated_functions/02_updateFunctionAPI.
 exports.addPendingRequest = require("./automated_functions/03_addPendingTransferRequest.js");
 exports.checkUpkeep = require("./automated_functions/04_checkUpkeep.js");
 exports.manualPerformUpkeep = require("./automated_functions/06_manualPerformUpkeep.js");
+exports.deleteTransferRequest = require("./cleanup/01_deletePendingTransferRequest.js");
+exports.clearTransferRequests = require("./cleanup/02_clearPendingTransferRequests.js");

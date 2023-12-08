@@ -19,16 +19,18 @@
 ## How to deploy contracts from scratch
 
 ### Steps to deploy
-- Deploy & Verify OneMesNaming.sol
+- Deploy OneMesNaming.sol
     - Use: ```npx hardhat setup-onemes-naming  --network {network name} --show-stack-traces ```
-- Deploy & Verify AutomatedFunctionsConsumer.sol
+- Deploy AutomatedFunctionsConsumer.sol
     - Use: ```npx hardhat setup-automated-consumer  --network {network name} --show-stack-traces ```
-- Deploy & Verify AccountFactory.sol
+- Deploy AccountFactory.sol
     - Use: ```npx hardhat setup-account-factory --network {network name} --show-stack-traces```
 - Update AccountFactory.sol settings.
     - Update settings: ```npx hardhat update-settings-account-factory --network sepolia --accountfactory {AccountFactory contract address} --onemesnaming {OneMesNaming contract address} --functionconsumer {AutomatedFunctionConsumer contract address}  --show-stack-traces```
 - Update Request Post API for AutomatedFunctionConsumer
     - Use: ```npx hardhat update-function-api --network sepolia --consumeraddress {AutomatedFunctionConsumer contract address} --subscriptionid {your chainlink subscription id}  --show-stack-traces```
+- Verify contracts:
+    - Use: ```npx hardhat verify --network {network name} {contract address}```
 ### Integrate with Chainlink
 - Register a Chainlink upkeep
 - Create a Chainlink subscription ID and add consumer.

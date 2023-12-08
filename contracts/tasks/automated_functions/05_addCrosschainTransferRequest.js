@@ -1,22 +1,20 @@
 const { BigNumber } = require("ethers")
 
-task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request").setAction(async (taskArgs, hre) => {
-    if (network.name === "hardhat") {
-        throw Error("This command cannot be used on a local development chain.  Specify a valid network.")
-    }
-    if (network.name !== "fuji") {
-        throw Error("This task is intended to be executed on the Fuji network.")
-    }
+task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request")
+    .addParam("contractaddress", "address of AutomatedFunctionsConsumer.sol")
+    .setAction(async (taskArgs, hre) => {
 
-    console.log("\n__Compiling Contracts__")
-    await run("compile")
+        const { contractaddress } = taskArgs;
 
-    console.log(`\nAdd pending request to ${network.name}...`)
-    const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
-    const functionsContract = await functionsFactory.attach("0xa8080C7D771dc5B7a2e13E5803dAB0253BC145D5");
+        console.log("\n__Compiling Contracts__")
+        await run("compile")
 
-    const sendTokensTx = await functionsContract.updatePendingTransferRequest(
-        
+        console.log(`\nAdd pending request to ${network.name}...`)
+        const functionsFactory = await ethers.getContractFactory("AutomatedFunctionsConsumer");
+        const functionsContract = await functionsFactory.attach(contractaddress);
+
+        const sendTokensTx = await functionsContract.updatePendingTransferRequest(
+
             [
                 "6566facb8a63cfdcfb79f935",
                 "0x296C134d55Ae13eeab316605bceD8B04e36571D1",
@@ -25,8 +23,8 @@ task("add-cross-chain-transfer-request", "add-cross-chain-transfer-request").set
                 1000000,
                 new BigNumber.from("16015286601757825753")
             ]
-        
-    )
-    await sendTokensTx.wait()
-    console.log("\nTx hash is ", sendTokensTx.hash)
-})
+
+        )
+        await sendTokensTx.wait()
+        console.log("\nTx hash is ", sendTokensTx.hash)
+    })

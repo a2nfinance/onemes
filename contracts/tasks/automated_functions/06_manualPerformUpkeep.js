@@ -1,5 +1,3 @@
-const { BigNumber } = require("ethers")
-
 task("manual-perform-upkeep", "manual-perform-upkeep").addParam("contractaddress", "address of AutomatedFunctionConsumer.sol").setAction(async (taskArgs, hre) => {
    
     const { contractaddress } = taskArgs
