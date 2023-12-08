@@ -47,7 +47,7 @@ We built OneMes based on the following steps:
 Despite facing challenges initially, over the course of the hackathon, we have achieved specific outcomes:
 
 - Successfully built a practical system addressing real-world problems.
-- Default support for Avalanche Fuji, and users can easily expand their accounts to Ethereum Sepolia and Polygon Mumbai.
+- **Default support for Avalanche Fuji**, and users can easily expand their accounts to Ethereum Sepolia and Polygon Mumbai.
 - Implemented advanced Chainlink technologies into the product.
 - Enhanced the user experience in the crypto space.
 
