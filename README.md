@@ -1,10 +1,18 @@
 ## Overview
 OneMes - Offline & Online Token transfer with messaging.
 
+## Demo information:
+
+- AA wallet: [app.onemes.a2n.finance](https://app.onemes.a2n.finance)
+- Telegram bot: [OneMes](http://t.me/Onemes_a2n_bot)
+- Phone number to send a transfer token request: ***+17828008299***
+
+## Chainlink technology
+OneMes has utilized Chainlink Technologies as core components, [more details can be found here](../contracts/README.md).
 ## System architecture
 ![](./01_onemes_workflow.jpg)
 
-For more details, please see our introduction video.
+We have an explain of this architecture, please see our [introduction video](https://youtu.be/0q8nc1laWmE?t=109).
 
 ## Prerequisites
 
