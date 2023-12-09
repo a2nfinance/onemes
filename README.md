@@ -8,7 +8,7 @@ OneMes - Offline & Online Token transfer with messaging.
 - Phone number to send a transfer token request: ***+17828008299***
 
 ## Chainlink technology
-OneMes has utilized Chainlink Technologies as core components, [more details can be found here](../contracts/README.md).
+OneMes has utilized Chainlink Technologies as core components, [more details can be found here](./contracts/README.md).
 ## System architecture
 ![](./01_onemes_workflow.jpg)
 
