@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
-const {searchAccounts, saveTransferRequest} = require("./core/account");
+const { searchAccounts, saveTransferRequest } = require("./core/account");
+const { validate } = require('./core/validate');
 require("dotenv").config();
 
 const token = process.env.API_TOKEN;
@@ -13,7 +14,7 @@ bot.onText(/\/start/, (msg, match) => {
 
 bot.onText(/\/search (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
-    const resp = match[1]; 
+    const resp = match[1];
     searchAccounts(resp).then(data => {
         console.log(data);
         bot.sendMessage(chatId, `${data}`);
@@ -21,20 +22,26 @@ bot.onText(/\/search (.+)/, (msg, match) => {
         console.log(e);
         bot.sendMessage(chatId, `Account ${resp} information not found.`);
     })
-    
+
 });
 
 bot.onText(/\/transfer (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
-    const resp = match[1]; 
+    const resp = match[1];
+    validate(msg.from.id, resp).then(data => {
+        if (data.success) {
+            saveTransferRequest(msg.from.id, resp, chatId).then(data => {
+                bot.sendMessage(chatId, `${data}`);
+            }).catch((e) => {
+                console.log(e);
+                bot.sendMessage(chatId, `Account ${resp} information not found.`);
+            })
+        } else {
+            bot.sendMessage(chatId, data.result);
+        }
+    });
 
-    saveTransferRequest(msg.from.id, resp, chatId).then(data => {
-        bot.sendMessage(chatId, `${data}`);
-    }).catch((e) => {
-        console.log(e);
-        bot.sendMessage(chatId, `Account ${resp} information not found.`);
-    })
-    
+
 });
 
 bot.on('message', (msg, meta) => {
