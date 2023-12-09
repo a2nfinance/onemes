@@ -16,7 +16,7 @@ const telegramPattern = new RegExp(/^[0-9]+$/);
 const onemesNamingPattern = new RegExp(/^[a-zA-Z0-9._-]+\.(onemes)$/);
 
 const getSenderReceiver = async (senderQuery: any[], receiverQuery: any[]) => {
-    let getReq = await fetch(`/api/account/get-sender-receiver`, {
+    let getReq = await fetch(`${process.env.HOST}/api/account/get-sender-receiver`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
