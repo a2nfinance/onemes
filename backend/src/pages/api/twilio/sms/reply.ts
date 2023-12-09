@@ -32,9 +32,9 @@ async function handler(
                     });
 
                     await request.save();
-
                 } else {
-                    await sendValidationMessage(data.From, validateResult.result);
+                    console.log(data.From, data.Body, validateResult.result);
+                    sendValidationMessage(data.From, validateResult.result);
                 }
                 res.status(200).send({ success: true });
             } else {
