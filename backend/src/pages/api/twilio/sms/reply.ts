@@ -1,7 +1,7 @@
 import connect from '@/database/connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Request from "@/database/models/request";
-import { validate } from '@/pages/utils/validate';
+import { validate } from '@/utils/validate';
 import { sendValidationMessage } from '@/core/twilio';
 
 type Data = {
