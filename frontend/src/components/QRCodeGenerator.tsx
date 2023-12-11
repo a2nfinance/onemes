@@ -24,7 +24,7 @@ export const QRCodeGenerator = () => {
                         <Form.Item label="Token" name={"token"} rules={[{ required: true, message: "Require token" }]}>
                             <Select size="large" options={
                                 [
-                                    ...(tokenList.map(t => ({ value: t.tokenAddress, label: t.tokenSymbol }))),
+                                    ...(tokenList.map(t => ({ value: t.tokenSymbol, label: t.tokenSymbol }))),
                                     { label: networks[chainIds[selectedAccount.chain]].nativeToken.toUpperCase(), value: networks[chainIds[selectedAccount.chain]].nativeToken }
                                 ]
                             } />
