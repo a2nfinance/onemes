@@ -124,7 +124,7 @@ export const Actions = () => {
     return (
         <>
             <Alert type='info' message={
-                <Text>To initiate token transfers, whether offline or online through messaging, <a onClick={showGuideModal}>click here.</a></Text>
+                <Text>Guides to initiate token transfers, whether offline or online through messaging, <a onClick={showGuideModal}>click here.</a></Text>
             } showIcon />
             <br />
             <Flex justify='space-between'>

@@ -9,6 +9,11 @@ import "./structs/Structs.sol";
 import "./interfaces/IAccount.sol";
 import "./interfaces/ICustomAutomatedFunction.sol";
 
+/**
+ * @title  AutomatedFunctions contract.
+ * @author levi@a2n.finance
+ * @notice this contract implements batch transfer using cross contract calls.
+ */
 contract AutomatedFunctionsConsumer is
   ICustomAutomatedFunction,
   FunctionsClient,
@@ -38,6 +43,9 @@ contract AutomatedFunctionsConsumer is
 
   receive() external payable {}
 
+  /**
+   * @param _pendingTransferRequest Structs.PendingRequest
+   */
   function updatePendingTransferRequest(
     Structs.PendingTransferRequest calldata _pendingTransferRequest
   ) external override onlyOwner returns (uint256) {
@@ -46,6 +54,10 @@ contract AutomatedFunctionsConsumer is
     return _pendingTransferRequests.length;
   }
 
+  /**
+   *
+   * @param requests Structs.PendingRequest[]
+   */
   function updatePendingTransferRequests(
     Structs.PendingTransferRequest[] memory requests
   ) external override onlyOwner returns (uint256) {
@@ -67,6 +79,11 @@ contract AutomatedFunctionsConsumer is
     emit ClearPendingTransferRequests(_pendingTransferRequests.length);
   }
 
+  /**
+   *
+   * @param args processed transfer requests.
+   * @param bytesArgs null
+   */
   function sendRequest(string[] memory args, bytes[] memory bytesArgs) internal returns (bytes32 requestId) {
     FunctionsRequest.Request memory req;
     req.initializeRequestForInlineJavaScript(source);
@@ -110,7 +127,7 @@ contract AutomatedFunctionsConsumer is
   function performUpkeep(bytes calldata /* performData */) external override {
     if (_pendingTransferRequests.length > 0) {
       string[] memory requestIds = new string[](_pendingTransferRequests.length);
-      // Call to account contract here
+      // Cross contract calls to AA contracts.
       for (uint256 i = 0; i < _pendingTransferRequests.length; i++) {
         try
           IAccount(_pendingTransferRequests[i].accountAddress).transferTokensPayLink(

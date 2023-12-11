@@ -1,4 +1,3 @@
-
 ## Utilizing Chainlink technologies
 - The smart contract utilizes Chainlink Automation & Chainlink Functions: [AutomatedFunctionsConsumer](./contracts/AutomatedFunctionsConsumer.sol)
 - The smart contract utilizes Chainlink CCIP: [AA contract](./contracts/Account.sol)
