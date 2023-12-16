@@ -37,11 +37,13 @@ To understand source code, you should have basic knowlege of:
 
 
 
-**Step 2: Install webapp libraries**
+**Step 2: Install libraries**
 - Go to each folder
-    - ```cd webapp ``` -> ```npm i```
-    - ```cd admin ``` -> ```npm i```
-    - ```cd carbon-credit-mkp ``` -> ```npm i```
+    - ```cd frontend ``` -> ```npm i```
+    - ```cd backend ``` -> ```npm i```
+    - ```cd cronjob``` -> ```npm i```
+    - ```cd contracts``` -> ```npm i```
+    - ```cd telegram_bot``` -> ```npm i```
 
 **Step 3: Deploy smart contracts**
 
